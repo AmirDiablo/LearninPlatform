@@ -5,6 +5,7 @@ const Teacher = require("../models/teacherModel")
 const mongoose = require("mongoose")
 const bcrypt = require("bcryptjs")
 const fs = require("fs")
+const path = require("path")
 
 const createToken = (_id)=> {
     return jwt.sign({_id}, process.env.SECRET, { expiresIn: "10d" })
@@ -126,11 +127,18 @@ const editProfile = async(req, res)=> {
             );
 
             // سپس فایل قدیمی را حذف کنید
-            if (currentProfile[0]?.profile && fs.existsSync("../frontend/public/profiles/" + currentProfile[0].profile)) {
-                fs.unlink("../frontend/public/profiles/" + currentProfile[0].profile, (err) => {
-                    if (err) console.log(err);
-                    console.log("profile photo changed");
-                });
+            if(currentProfile[0].profile) {
+                const oldProfilePath = path.join(__dirname, "..", "uploads", "profiles", currentProfile[0].profile);
+                console.log("Old profile path:", oldProfilePath);
+
+                if (fs.existsSync(oldProfilePath)) {
+                    fs.unlink(oldProfilePath, (err) => {
+                        if (err) console.log("Error deleting old profile:", err);
+                        else console.log("Old profile deleted successfully");
+                    });
+                }
+            }else{
+                console.log("not exists")
             }
 
         }else{
@@ -223,11 +231,33 @@ const Studentinfos = async (req, res)=> {
 
 const studentEditProfile = async(req, res) => {
     const userId = req.user._id.toString()
-    const {username} = req.body
+    const {name} = req.body
     const profile = req.file.filename
 
-    const update = await Account.findOneAndUpdate({_id: userId}, {$set: {username: username, profile: profile}})
-    res.status(200).json(update)
+    const currentProfile = await Account.find({ _id: userId }, { profile: 1, _id: 0 });
+
+    const profilePhoto = await Account.findOneAndUpdate(
+        { _id: userId },
+        { $set: { profile: profile, username: name } },
+        { new: true } // این گزینه باعث می‌شود سند آپدیت شده برگردانده شود
+    );
+
+    // سپس فایل قدیمی را حذف کنید
+    if(currentProfile[0].profile) {
+        const oldProfilePath = path.join(__dirname, "..", "uploads", "profiles", currentProfile[0].profile);
+        console.log("Old profile path:", oldProfilePath);
+
+        if (fs.existsSync(oldProfilePath)) {
+            fs.unlink(oldProfilePath, (err) => {
+                if (err) console.log("Error deleting old profile:", err);
+                else console.log("Old profile deleted successfully");
+            });
+        }
+    }else{
+        console.log("not exists")
+    }
+
+    res.status(200).json(profilePhoto)
 }
 
 module.exports = { signup, userInfo, liveSearch, userLogin, editProfile, continueWithGoogle, changePass, setPass, completeTeachersSignup, teacherInfo, Studentinfos, studentEditProfile }
