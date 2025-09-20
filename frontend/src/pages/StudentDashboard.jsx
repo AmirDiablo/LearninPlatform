@@ -1,0 +1,94 @@
+import { useUser } from "../context/userContext";
+import { FaJs } from "react-icons/fa";
+import TeachersDashTop from "../components/TeachersDashTop";
+import { useEffect, useState } from "react";
+
+
+const StudentDashboard = () => {
+    const {user} = useUser()
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(null)
+    const [info, setInfo] = useState([])
+
+    const fetchUser = async ()=> {
+        setLoading(true)
+        setError(null)
+        const response = await fetch("http://localhost:3000/api/user/infos", {
+            method: "GET",
+            headers: {
+                "Authorization" : `Bearer ${user.token}`
+            }
+        })
+        const json = await response.json()
+
+        if(response.ok) {
+            setError(null)
+            setLoading(false)
+            setInfo(json)
+        }
+
+        if(!response.ok) {
+            setError(json.message)
+            setLoading(false)
+        }
+    }
+
+    useEffect(()=> {
+        if(user?.token) {
+            fetchUser()
+        }
+    }, [user])
+
+    return ( 
+        <div>
+
+            <div className="lg:w-[30%]">
+                <TeachersDashTop active={'teacherdashboard'} /> 
+            </div>
+            
+            <div className="lg:w-[70%] lg:absolute lg:right-0">
+                <div className="flex justify-between items-center mx-5">
+                    <p className="text-2xl">Welcome back, {info.username}</p>
+                    <img src={"http://localhost:3000/uploads/profiles/"+info.profile} className="rounded-full object-cover w-30" />
+                </div>
+
+                <div className="mx-5 mt-10">
+                    <p className="text-[18px]">My Courses</p>
+                    <div className="w-[100%] flex justify-between gap-5 bg-white p-5 mt-2">
+                        <div className="w-[100%]">
+                            <strong>python for beginners</strong>
+                            <div className="w-[100%] h-[10px] bg-red-200 rounded-full"><div className="w-[40%] bg-orange-500 h-[100%] rounded-full"></div></div>
+                        </div>
+                        <button className="bg-orange-500 text-white text-center rounded-[7px] px-5 py-2">Continue</button>
+                    </div>
+
+                    <div className="w-[100%] flex justify-between gap-5 bg-white p-5 mt-2">
+                        <div className="w-[100%]">
+                            <strong>Java for beginners</strong>
+                            <div className="w-[100%] h-[10px] bg-red-200 rounded-full"><div className="w-[70%] bg-orange-500 h-[100%] rounded-full"></div></div>
+                        </div>
+                        <button className="bg-orange-500 text-white text-center rounded-[7px] px-5 py-2">Continue</button>
+                    </div>
+                </div>
+
+                <div className="mx-5 mt-10">
+                    <p className="text-[18px]">Recommended</p>
+                    <div className="flex items-center gap-5 p-2 bg-white rounded-2xl mt-2">
+                        <div className="text-6xl text-orange-500"><FaJs className="rounded-2xl"/></div>
+                        <p className="text-xl">JavaScript fundamentals</p>
+                    </div>
+
+                    <div className="flex items-center gap-5 p-2 bg-white rounded-2xl mt-2">
+                        <div className="text-6xl text-orange-500"><FaJs className="rounded-2xl"/></div>
+                        <p className="text-xl">JavaScript fundamentals</p>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+     );
+}
+ 
+export default StudentDashboard;
