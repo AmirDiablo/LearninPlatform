@@ -2,7 +2,9 @@ const validator = require("validator")
 const jwt = require("jsonwebtoken")
 const Account = require("../models/accountModel")
 const Teacher = require("../models/teacherModel")
+const Course = require("../models/courseModel")
 const mongoose = require("mongoose")
+const Payment = require("../models/paymentModel")
 const bcrypt = require("bcryptjs")
 const fs = require("fs")
 const path = require("path")
@@ -90,6 +92,47 @@ const teacherInfo = async(req, res) => {
     const userInfo = await Teacher.find({userId: id}).populate("userId")
 
     res.status(200).json(userInfo)
+}
+
+const teacherStatics = async(req, res) => {
+    try{
+        const userId = req.user._id.toString()
+
+        const isTeacher = await Teacher.findOne({userId})
+        if(!isTeacher) {
+            throw new Error("only teachers have access to these datas")
+        }
+
+        const courses = await Course.find({userId})
+        const courseCount = courses.length
+
+        //get teacher neccesary information
+        const teacher = await Teacher.findOne({userId}).populate({path: "userId", select: 'username profile'}).select({userId: 1, rating: 1, studentCount: 1})
+
+        //make a list of all teacher's course ids
+        let coursesIds = []
+        courses.forEach(item=> coursesIds.push(item._id.toString()))
+
+        const payments = await Payment.find({courseId: {$in: coursesIds}})
+        let totalIncome = 0;
+        payments.map(item=> totalIncome = totalIncome + item.amount)
+
+        const response = {
+            id: teacher.userId._id,
+            username: teacher.userId.username,
+            profile: teacher.userId.profile,
+            rating: teacher.rating,
+            studentCount: teacher.studentCount,
+            courseCount: courseCount,
+            income: totalIncome
+        }
+
+        res.status(200).json([response])
+    }
+    catch(error) {
+        res.status(500).json({message: error.message})
+    }
+
 }
 
 const liveSearch = async(req, res)=> {
@@ -260,4 +303,4 @@ const studentEditProfile = async(req, res) => {
     res.status(200).json(profilePhoto)
 }
 
-module.exports = { signup, userInfo, liveSearch, userLogin, editProfile, continueWithGoogle, changePass, setPass, completeTeachersSignup, teacherInfo, Studentinfos, studentEditProfile }
+module.exports = { signup, userInfo, liveSearch, userLogin, editProfile, continueWithGoogle, changePass, setPass, completeTeachersSignup, teacherInfo, Studentinfos, studentEditProfile, teacherStatics }
