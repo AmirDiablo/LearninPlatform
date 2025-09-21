@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken")
 const Account = require("../models/accountModel")
 const Teacher = require("../models/teacherModel")
 const Course = require("../models/courseModel")
+const Enrollment = require("../models/enrollmentsModel")
 const mongoose = require("mongoose")
 const Payment = require("../models/paymentModel")
 const bcrypt = require("bcryptjs")
@@ -111,11 +112,44 @@ const teacherStatics = async(req, res) => {
 
         //make a list of all teacher's course ids
         let coursesIds = []
-        courses.forEach(item=> coursesIds.push(item._id.toString()))
+        courses.forEach(item=> coursesIds.push(item._id))
 
         const payments = await Payment.find({courseId: {$in: coursesIds}})
         let totalIncome = 0;
         payments.map(item=> totalIncome = totalIncome + item.amount)
+
+        const enrollmentCounts = await Enrollment.aggregate([
+            { $match: { courseId: { $in: coursesIds } } },
+            { $group: {
+                _id: "$courseId",
+                count: { $sum: 1 }
+                }
+            },
+            {
+                $lookup: {
+                from: "courses", // نام کالکشن دوره‌ها
+                localField: "_id", // courseId از Enrollment
+                foreignField: "_id", // _id از Course
+                as: "course"
+                }
+            },
+            {
+                $unwind: "$course" // چون lookup یک آرایه برمی‌گردونه
+            },
+            {
+                $project: {
+                _id: 0,
+                courseId: "$_id",
+                courseTitle: "$course.title", // یا هر فیلدی که اسم دوره رو نگه می‌داره
+                count: 1
+                }
+            }
+        ]);
+
+        console.log(enrollmentCounts)
+
+        let totalEnrollment = 0;
+        enrollmentCounts.map(item=> totalEnrollment = totalEnrollment + item.count)
 
         const response = {
             id: teacher.userId._id,
@@ -124,7 +158,9 @@ const teacherStatics = async(req, res) => {
             rating: teacher.rating,
             studentCount: teacher.studentCount,
             courseCount: courseCount,
-            income: totalIncome
+            income: totalIncome,
+            enrollmentCounts,
+            totalEnrollment
         }
 
         res.status(200).json([response])

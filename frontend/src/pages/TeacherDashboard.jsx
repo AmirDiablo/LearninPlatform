@@ -7,6 +7,7 @@ import { MdGroup } from "react-icons/md";
 import { FaDollarSign } from "react-icons/fa";
 import { useState } from "react";
 import { useEffect } from "react";
+import Donut from "../components/Donut";
 
 const TeacherDashboard = () => {
     const {user} = useUser()
@@ -83,6 +84,8 @@ const TeacherDashboard = () => {
                             <p>Income</p>
                         </div>
                     </div>
+
+                    <Donut statics={item.enrollmentCounts} enrollmentCount={item.totalEnrollment} />
 
             </div>
             ))}
