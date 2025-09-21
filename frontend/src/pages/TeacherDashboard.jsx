@@ -8,6 +8,7 @@ import { FaDollarSign } from "react-icons/fa";
 import { useState } from "react";
 import { useEffect } from "react";
 import Donut from "../components/Donut";
+import Progress from "../components/Progress";
 
 const TeacherDashboard = () => {
     const {user} = useUser()
@@ -86,6 +87,10 @@ const TeacherDashboard = () => {
                     </div>
 
                     <Donut statics={item.enrollmentCounts} enrollmentCount={item.totalEnrollment} />
+                    <div className="flex items-center">
+                        <Progress total={item.totalEnrollment} count={item.finishedCount} />
+                        <p className="font-[600] -translate-y-[20px] text-2xl text-orange-500">{item.finishedCount * 100 / item.totalEnrollment}% of your students finish courses</p>
+                    </div>
 
             </div>
             ))}

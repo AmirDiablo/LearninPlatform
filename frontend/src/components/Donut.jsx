@@ -35,7 +35,7 @@ const Donut = ({statics, enrollmentCount}) => {
     }, [])
 
     return ( 
-        <div className="flex gap-5 mt-10 mx-5 mb-10">
+        <div className="flex items-center gap-5 mt-10 mx-5 mb-10">
 
             <div className={`relative pieChart aspect-square w-40 rounded-full`}>
                 <div className="bg-white aspect-square w-25 rounded-full absolute left-[50%] -translate-x-[50%] top-[50%] -translate-y-[50%]"></div>

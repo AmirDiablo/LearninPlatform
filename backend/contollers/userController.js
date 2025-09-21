@@ -146,10 +146,10 @@ const teacherStatics = async(req, res) => {
             }
         ]);
 
-        console.log(enrollmentCounts)
-
         let totalEnrollment = 0;
         enrollmentCounts.map(item=> totalEnrollment = totalEnrollment + item.count)
+
+        const finishedCount = await Enrollment.countDocuments({courseId: {$in: coursesIds}, completed: true})
 
         const response = {
             id: teacher.userId._id,
@@ -160,7 +160,8 @@ const teacherStatics = async(req, res) => {
             courseCount: courseCount,
             income: totalIncome,
             enrollmentCounts,
-            totalEnrollment
+            totalEnrollment,
+            finishedCount
         }
 
         res.status(200).json([response])

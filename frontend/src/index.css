@@ -195,6 +195,14 @@ footer {
     color: white;
     font-size: 14px;
 }
+/*********************************/
+.progress{
+    box-shadow: inset 1px 1px 10px;
+}
+
+.innerProgress{
+    box-shadow: 1px 1px 10px;
+}
 
 @media (max-width: 768px) {
     .controls {
