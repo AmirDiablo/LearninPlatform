@@ -78,7 +78,7 @@ const getQuiz = async (req, res) => {
 
         const quiz = await Quiz.findOne({_id: quizId})
 
-        res.status(200).json([quiz])
+        res.status(200).json(quiz)
     }
     catch(error) {
         res.status(500).json({message: error.message})

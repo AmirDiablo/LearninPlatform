@@ -2,16 +2,22 @@ import { useState } from "react"
 import {useUser} from "../context/userContext"
 import { useEffect } from "react"
 import { useLocation } from "react-router-dom"
+import { FaCheckCircle } from "react-icons/fa";
+import { IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowForward } from "react-icons/io";
+import { LuAlarmClockCheck } from "react-icons/lu";
+import check from "../assets/check.jfif"
 
 const QuizPage = () => {
     const quizId = useLocation().search.split("=")[1]
     const {user} = useUser()
     const [quiz, setQuiz] = useState([])
-    const [index, setIndex] = useState(0)
+    const [questionIndex, setQuestionIndex] = useState(0)
+    const [sec, setSec] = useState()
+    const [answers, setAnswers] = useState({})
+    const [selectedOption, setSelectedOption] = useState()
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(false)
-
-    console.log(quizId)
 
     const fetchQuiz = async ()=> {
         setLoading(true)
@@ -29,6 +35,7 @@ const QuizPage = () => {
             setLoading(false)
             setError(null)
             setQuiz(json)
+            setSec(json?.time)
         }
 
         if(!response.ok) {
@@ -43,19 +50,129 @@ const QuizPage = () => {
         }
     }, [user])
 
-    return ( 
-    <div>
+    const timeFormater = ()=> {
+        setSec(sec-1)
+    }
 
-        {quiz.map(item=> (
-            <div>
-                <p>{item.questions[index].question}</p>
-                <div>
-                    {item.questions[index].options.map(option=> (
-                        <p>{option}</p>
-                    ))}
-                </div>
+    useEffect(()=> {
+        const myInterval = setInterval(() => {
+            timeFormater()
+        }, 1000);
+
+        return ()=> {
+            clearInterval(myInterval)
+        }
+    }, [sec])
+
+    const select = (optionIndex)=> {
+        setSelectedOption(optionIndex)
+        setAnswers(pre=> ({...answers, [questionIndex]: optionIndex}))
+    }
+
+    useEffect(()=> {
+        setSelectedOption(null)
+    }, [questionIndex])
+
+    const prev = ()=> {
+        if(questionIndex == 0){
+            setQuestionIndex(0)
+        }else{
+            setQuestionIndex(questionIndex-1)
+        }
+    }
+
+    const next = ()=> {
+        if(questionIndex == quiz.questions.length) {
+            setQuestionIndex(quiz.questions.length)
+        }else{
+            setQuestionIndex(questionIndex+1)
+        }
+    }
+
+    const submit = async(e)=> {
+        e.preventDefault()
+        setLoading(true)
+        setError(null)
+        const response = await fetch("http://localhost:3000/api/quiz/submitQuiz", {
+            method: "PATCH",
+            body: JSON.stringify({answers, quizId}),
+            headers: {
+                "Authorization" : `Bearer ${user.token}`,
+                "Content-Type" : "application/json"
+            }
+        })
+
+        const json = await response.json()
+
+        if(response.ok) {
+            setLoading(false)
+            setError(null)
+            console.log("ok")
+        }
+
+        if(!response.ok) {
+            setLoading(false)
+            setError(json.message)
+        }
+    }
+
+
+    return ( 
+    <div className="lg:flex lg:items-center">
+
+        <div className="flex items-center justify-between mx-5 lg:w-[40%] self-start lg:mt-5">
+             
+            <div className="flex gap-2 w-[60%] overflow-x-auto lg:flex-wrap lg:w-[75%]">
+                {quiz?.questions?.map((q, index)=> (
+                    <><div onClick={()=> setQuestionIndex(index)} className={`bg-white border-2 ${index == questionIndex ? "border-orange-500" : "border-black/20"} rounded-[7px] p-2 aspect-square w-10 text-center`}>{index+1}</div>
+                    <div onClick={()=> setQuestionIndex(index)} className={`bg-white border-2 ${index == questionIndex ? "border-orange-500" : "border-black/20"} rounded-[7px] p-2 aspect-square w-10 text-center`}>{index+1}</div>
+                    <div onClick={()=> setQuestionIndex(index)} className={`bg-white border-2 ${index == questionIndex ? "border-orange-500" : "border-black/20"} rounded-[7px] p-2 aspect-square w-10 text-center`}>{index+1}</div>
+                    <div onClick={()=> setQuestionIndex(index)} className={`bg-white border-2 ${index == questionIndex ? "border-orange-500" : "border-black/20"} rounded-[7px] p-2 aspect-square w-10 text-center`}>{index+1}</div>
+                    <div onClick={()=> setQuestionIndex(index)} className={`bg-white border-2 ${index == questionIndex ? "border-orange-500" : "border-black/20"} rounded-[7px] p-2 aspect-square w-10 text-center`}>{index+1}</div>
+                    <div onClick={()=> setQuestionIndex(index)} className={`bg-white border-2 ${index == questionIndex ? "border-orange-500" : "border-black/20"} rounded-[7px] p-2 aspect-square w-10 text-center`}>{index+1}</div>
+                    <div onClick={()=> setQuestionIndex(index)} className={`bg-white border-2 ${index == questionIndex ? "border-orange-500" : "border-black/20"} rounded-[7px] p-2 aspect-square w-10 text-center`}>{index+1}</div>
+                    <div onClick={()=> setQuestionIndex(index)} className={`bg-white border-2 ${index == questionIndex ? "border-orange-500" : "border-black/20"} rounded-[7px] p-2 aspect-square w-10 text-center`}>{index+1}</div>
+                    <div onClick={()=> setQuestionIndex(index)} className={`bg-white border-2 ${index == questionIndex ? "border-orange-500" : "border-black/20"} rounded-[7px] p-2 aspect-square w-10 text-center`}>{index+1}</div>
+                    <div onClick={()=> setQuestionIndex(index)} className={`bg-white border-2 ${index == questionIndex ? "border-orange-500" : "border-black/20"} rounded-[7px] p-2 aspect-square w-10 text-center`}>{index+1}</div></>
+                ))}
             </div>
-        ))}
+            
+
+            <div className="bg-orange-500 flex items-center gap-2 w-max min-w-max text-white text-center px-5 py-2 rounded-xl lg:self-start">
+                <div className="text-3xl"><LuAlarmClockCheck /></div>{Math.floor(sec/60)} : {sec % 60 < 10 ? ("0" + sec%60) : sec % 60}
+            </div>
+
+        </div>
+
+        {questionIndex == quiz?.questions?.length && 
+            <div className="w-[90%] mx-auto text-center mt-10 rounded-2xl bg-white p-2">
+                <p className="font-[600] text-2xl">The quiz is over</p>
+                <img src={check} className="mx-auto" />
+                <p>if you are sure about your answers submit it</p>
+                <button className="bg-orange-500 mt-2 text-white text-center px-5 py-2 rounded-[7px]">Submit</button>
+            </div>
+        }
+
+        <div className="lg:w-[50%] lg:mx-auto sm:w-[80%] mx-auto md:w-[70%]">
+
+            {quiz?.questions?.length > questionIndex && (
+                <div className="bg-white mt-5 p-5 border-[2px] w-[90%] mx-auto border-black/20 rounded-2xl">
+                    <div className="flex items-center"><p className="font-[600]">Question {questionIndex+1}</p>: {quiz?.questions[questionIndex]?.question}</div>
+                    <div className="h-[1px] bg-black/20 my-5"></div>
+                    <div className="space-y-5">
+                        {quiz?.questions[questionIndex]?.options?.map((option, index)=> (
+                            <div onClick={()=> select(index)} className="flex items-center gap-2">{selectedOption == index ? <FaCheckCircle className="text-green-800 text-xl" /> : <p className="w-5 aspect-square border-2 rounded-full"></p>}<p>{option}</p></div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            <div className="flex items-center justify-center mt-10 *:text-3xl gap-5 *:rounded-[7px] *:bg-orange-500 *:text-white *:p-2">
+                <div onClick={prev}><IoIosArrowBack /></div>
+                <div onClick={next}><IoIosArrowForward /></div>
+            </div>
+
+        </div>
         
     </div> 
 );
