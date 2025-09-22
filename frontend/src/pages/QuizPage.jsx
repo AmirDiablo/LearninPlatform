@@ -124,16 +124,7 @@ const QuizPage = () => {
              
             <div className="flex gap-2 w-[60%] overflow-x-auto lg:flex-wrap lg:w-[75%]">
                 {quiz?.questions?.map((q, index)=> (
-                    <><div onClick={()=> setQuestionIndex(index)} className={`bg-white border-2 ${index == questionIndex ? "border-orange-500" : "border-black/20"} rounded-[7px] p-2 aspect-square w-10 text-center`}>{index+1}</div>
                     <div onClick={()=> setQuestionIndex(index)} className={`bg-white border-2 ${index == questionIndex ? "border-orange-500" : "border-black/20"} rounded-[7px] p-2 aspect-square w-10 text-center`}>{index+1}</div>
-                    <div onClick={()=> setQuestionIndex(index)} className={`bg-white border-2 ${index == questionIndex ? "border-orange-500" : "border-black/20"} rounded-[7px] p-2 aspect-square w-10 text-center`}>{index+1}</div>
-                    <div onClick={()=> setQuestionIndex(index)} className={`bg-white border-2 ${index == questionIndex ? "border-orange-500" : "border-black/20"} rounded-[7px] p-2 aspect-square w-10 text-center`}>{index+1}</div>
-                    <div onClick={()=> setQuestionIndex(index)} className={`bg-white border-2 ${index == questionIndex ? "border-orange-500" : "border-black/20"} rounded-[7px] p-2 aspect-square w-10 text-center`}>{index+1}</div>
-                    <div onClick={()=> setQuestionIndex(index)} className={`bg-white border-2 ${index == questionIndex ? "border-orange-500" : "border-black/20"} rounded-[7px] p-2 aspect-square w-10 text-center`}>{index+1}</div>
-                    <div onClick={()=> setQuestionIndex(index)} className={`bg-white border-2 ${index == questionIndex ? "border-orange-500" : "border-black/20"} rounded-[7px] p-2 aspect-square w-10 text-center`}>{index+1}</div>
-                    <div onClick={()=> setQuestionIndex(index)} className={`bg-white border-2 ${index == questionIndex ? "border-orange-500" : "border-black/20"} rounded-[7px] p-2 aspect-square w-10 text-center`}>{index+1}</div>
-                    <div onClick={()=> setQuestionIndex(index)} className={`bg-white border-2 ${index == questionIndex ? "border-orange-500" : "border-black/20"} rounded-[7px] p-2 aspect-square w-10 text-center`}>{index+1}</div>
-                    <div onClick={()=> setQuestionIndex(index)} className={`bg-white border-2 ${index == questionIndex ? "border-orange-500" : "border-black/20"} rounded-[7px] p-2 aspect-square w-10 text-center`}>{index+1}</div></>
                 ))}
             </div>
             
@@ -144,28 +135,34 @@ const QuizPage = () => {
 
         </div>
 
-        {questionIndex == quiz?.questions?.length && 
-            <div className="w-[90%] mx-auto text-center mt-10 rounded-2xl bg-white p-2">
-                <p className="font-[600] text-2xl">The quiz is over</p>
-                <img src={check} className="mx-auto" />
-                <p>if you are sure about your answers submit it</p>
-                <button className="bg-orange-500 mt-2 text-white text-center px-5 py-2 rounded-[7px]">Submit</button>
-            </div>
-        }
-
         <div className="lg:w-[50%] lg:mx-auto sm:w-[80%] mx-auto md:w-[70%]">
 
-            {quiz?.questions?.length > questionIndex && (
-                <div className="bg-white mt-5 p-5 border-[2px] w-[90%] mx-auto border-black/20 rounded-2xl">
-                    <div className="flex items-center"><p className="font-[600]">Question {questionIndex+1}</p>: {quiz?.questions[questionIndex]?.question}</div>
-                    <div className="h-[1px] bg-black/20 my-5"></div>
-                    <div className="space-y-5">
-                        {quiz?.questions[questionIndex]?.options?.map((option, index)=> (
-                            <div onClick={()=> select(index)} className="flex items-center gap-2">{selectedOption == index ? <FaCheckCircle className="text-green-800 text-xl" /> : <p className="w-5 aspect-square border-2 rounded-full"></p>}<p>{option}</p></div>
-                        ))}
-                    </div>
+            
+                <div>
+                    {questionIndex == quiz?.questions?.length ? 
+                        <div className="w-[90%] mx-auto text-center mt-10 rounded-2xl bg-white p-2 md:flex ">
+                            <img src={check} className="mx-auto md:w-[50%]" />
+                            <div className="md:w-[50%] self-center">
+                                <p className="font-[600] text-2xl">The quiz is over</p>
+                                <p>if you are sure about your answers submit it</p>
+                                <button className="bg-orange-500 mt-2 text-white text-center px-5 py-2 rounded-[7px]">Submit</button>
+                            </div>
+                        </div> :
+
+                        <div className="bg-white mt-5 p-5 border-[2px] w-[90%] mx-auto border-black/20 rounded-2xl">
+                            <div className="flex items-center"><p className="font-[600]">Question {questionIndex+1}</p>: {quiz?.questions[questionIndex]?.question}</div>
+                            <div className="h-[1px] bg-black/20 my-5"></div>
+                            <div className="space-y-5">
+                                {quiz?.questions[questionIndex]?.options?.map((option, index)=> (
+                                    <div onClick={()=> select(index)} className="flex items-center gap-2">{selectedOption == index ? <FaCheckCircle className="text-green-800 text-xl" /> : <p className="w-5 aspect-square border-2 rounded-full"></p>}<p>{option}</p></div>
+                                ))}
+                            </div>
+                        </div>
+                    }
+                    
                 </div>
-            )}
+                
+            
 
             <div className="flex items-center justify-center mt-10 *:text-3xl gap-5 *:rounded-[7px] *:bg-orange-500 *:text-white *:p-2">
                 <div onClick={prev}><IoIosArrowBack /></div>
