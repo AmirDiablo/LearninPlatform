@@ -4,6 +4,7 @@ import { FaPlus } from "react-icons/fa6";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useUser } from "../context/userContext";
+import { RxCross2 } from "react-icons/rx";
 
 const StudentQuizPage = () => {
     const {user} = useUser()
@@ -11,6 +12,7 @@ const StudentQuizPage = () => {
     const [error, setError] = useState()
     const [loading, setLoading] = useState(false)
     const [quizes, setQuizes] = useState([])
+    const [isOpen, setIsOpen] = useState(false)
 
     const fetchQuizez = async ()=> {
         setLoading(true)
@@ -52,13 +54,19 @@ const StudentQuizPage = () => {
     
                     <div className="md:flex space-y-2 md:space-x-5 md:flex-wrap">
                         {quizes.map(quiz=> (
-                            <div className="flex gap-2  bg-white border-[2px] border-black/10 p-2 rounded-2xl md:w-[40%]">
+                            <div className="flex gap-2 bg-white border-[2px] border-black/10 p-2 rounded-2xl md:w-[40%]">
                                 <img src={'http://localhost:3000/uploads/thumbnails/'+quiz.courseId.thumbnail} className="rounded-2xl object-cover w-20" />
-                                <div>
+                                <div onClick={()=> setIsOpen(true)}>
                                     <p className="font-[700]">{quiz.courseId.title}</p>
                                     <p className="inline mr-5">{quiz.time / 60} minutes</p>
                                     <p className="inline">{quiz.questions.length} questions</p>
                                 </div>
+
+                                 {isOpen && <div className="w-[50%] p-2 flex flex-col justify-between absolute  left-[50%] -translate-x-[50%] bg-white border-[2px] border-black/10 h-40 rounded-2xl">
+                                                <div onClick={()=> setIsOpen(false)}><RxCross2 /></div>
+                                                <p className="text-center">Are you sure you wanna participate in <strong>{quiz.courseId.title}</strong></p>
+                                                <button onClick={()=> navigate("/studentdashboard/quizPage?q="+quiz._id)} className="bg-orange-500 text-white text-center px-5 py-2 rounded-[7px] mx-auto w-max ">Start Quiz</button>
+                                            </div>}
                             </div>
                     )   )}
                     </div>

@@ -25,6 +25,7 @@ import StudentCoursesPage from "./pages/StudentCoursePage"
 import StudentQuizPage from "./pages/StudentQuizPage"
 import StudentPayments from "./pages/StudentPayments"
 import StudentProfileSetting from "./pages/StudentProfileSetting"
+import QuizPage from "./pages/QuizPage"
 
 function App() {
   const {user} = useUser()
@@ -59,6 +60,7 @@ function App() {
             <Route path="studentdashboard/studentQuizPage" element={<StudentQuizPage />} />
             <Route path="studentdashboard/studentPayments" element={<StudentPayments />} />
             <Route path="studentdashboard/studentProfileSetting" element={<StudentProfileSetting />} />
+            <Route path="studentdashboard/quizPage" element={<QuizPage />} />
           </Routes>
         </div>
       </BrowserRouter>
