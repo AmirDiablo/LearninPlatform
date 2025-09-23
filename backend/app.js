@@ -9,6 +9,7 @@ const courseRoutes = require("./routes/courseRoutes")
 const quizRoutes = require("./routes/quizRoutes")
 const paymentRoutes = require("./routes/paymentRoutes")
 const path = require("path")
+const schedule = require("./schedule")
 
 const app = express()
 
@@ -34,6 +35,7 @@ mongoose.connect(process.env.MONGO_URI)
     app.listen(process.env.PORT, ()=> {
         console.log("connected to DB and server start listen on port", process.env.PORT)
     })
+    schedule()
 })
 .catch((err)=> {
     console.log(err)
