@@ -10,12 +10,13 @@ const AnswerSchema = new mongoose.Schema({
         ref: "Account",
         required: true
     },
-    answers: {
-        type: String
-    },
+    answers: mongoose.Schema.Types.Mixed,
     score: {
-        type: Number,
-        required: true
+        type: Number
+    },
+    isFinished: {
+        type: Boolean,
+        default: false
     }
 }, {timestamps: true})
 

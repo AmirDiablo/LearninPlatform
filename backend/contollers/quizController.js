@@ -64,25 +64,57 @@ const getQuiz = async (req, res) => {
         const userId = req.user._id.toString()
         const {quizId} = req.query
 
-        console.log(userId, quizId)
-
         const isPayed = await Enrollment.findOne({studentId: userId})
         if(!isPayed) {
             throw new Error("You should pay first")
         }
 
-        const isParticipated = await Answer.findOne({studentId: userId, quizId: quizId})
+        const isParticipated = await Answer.findOne({studentId: userId, quizId: quizId, isFinished: true})
         if(isParticipated) {
             throw new Error("you can only participate one time")
         }
 
+        const isExist = await Answer.findOne({studentId: userId, quizId, isFinished: false})
+
         const quiz = await Quiz.findOne({_id: quizId})
 
-        res.status(200).json(quiz)
+        if(!isExist) {
+            const participation = await Answer.create({quizId, studentId: userId, isFinished: false})
+        }
+
+        //this part is for the situation that a user come back and continue the quiz
+        const startTime = isExist.createdAt
+        const time = new Date(startTime);
+        const endTime = new Date(time.getTime() + quiz.time * 1000);
+        const currentTime = new Date()
+        const remainingMilliseconds = endTime.getTime() - currentTime.getTime();
+        const remainingSeconds = Math.floor(remainingMilliseconds / 1000);
+
+        res.status(200).json({quiz, remained: remainingSeconds })
     }
     catch(error) {
+        console.log(error)
         res.status(500).json({message: error.message})
     }
 }
 
-module.exports = {createQuiz, teacherQuizes, AllQuizes, getQuiz}
+const submitQuiz = async (req, res)=> {
+    try{
+        const userId = req.user._id.toString()
+        const {quizId, answers} = req.body
+
+        const DuplicateCheck = await Answer.findOne({quizId, studentId: userId, isFinished: true})
+        if(DuplicateCheck) {
+            throw new Error("you submited it before")
+        }
+
+        const submit = await Answer.findOneAndUpdate({quizId: quizId, studentId: userId}, {$set: {answers: answers, isFinished: true}})
+        console.log(submit)
+        res.status(200).json(submit)
+    }
+    catch(error) {
+        res.status(400).json({message: error.message})
+    }
+}
+
+module.exports = {createQuiz, teacherQuizes, AllQuizes, getQuiz, submitQuiz}
