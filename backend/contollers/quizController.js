@@ -78,19 +78,24 @@ const getQuiz = async (req, res) => {
 
         const quiz = await Quiz.findOne({_id: quizId})
 
+        let remained;
+
         if(!isExist) {
             const participation = await Answer.create({quizId, studentId: userId, isFinished: false})
+            remained = quiz.time
+        }else{
+            //this part is for the situation that a user come back and continue the quiz
+            const startTime = isExist.createdAt
+            const time = new Date(startTime);
+            const endTime = new Date(time.getTime() + quiz.time * 1000);
+            const currentTime = new Date()
+            const remainingMilliseconds = endTime.getTime() - currentTime.getTime();
+            const remainingSeconds = Math.floor(remainingMilliseconds / 1000);
+            remained = remainingSeconds
         }
 
-        //this part is for the situation that a user come back and continue the quiz
-        const startTime = isExist.createdAt
-        const time = new Date(startTime);
-        const endTime = new Date(time.getTime() + quiz.time * 1000);
-        const currentTime = new Date()
-        const remainingMilliseconds = endTime.getTime() - currentTime.getTime();
-        const remainingSeconds = Math.floor(remainingMilliseconds / 1000);
-
-        res.status(200).json({quiz, remained: remainingSeconds })
+        
+        res.status(200).json({quiz, remained: remained })
     }
     catch(error) {
         console.log(error)

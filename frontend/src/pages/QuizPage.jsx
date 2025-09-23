@@ -1,7 +1,7 @@
 import { useState } from "react"
 import {useUser} from "../context/userContext"
 import { useEffect } from "react"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { FaCheckCircle } from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
@@ -15,10 +15,14 @@ const QuizPage = () => {
     const [quiz, setQuiz] = useState([])
     const [questionIndex, setQuestionIndex] = useState(0)
     const [sec, setSec] = useState()
-    const [answers, setAnswers] = useState(JSON.parse(localStorage.getItem(`${user?.userInfo[0]?._id}/${quizId}`)) || {})
+    const [answers, setAnswers] = useState(() => {
+    const storedValue = localStorage.getItem(`${user.userInfo[0]._id}/${quizId}`);
+        return storedValue ? JSON.parse(storedValue) : {};
+    })
     const [selectedOption, setSelectedOption] = useState()
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(false)
+    const navigate = useNavigate()
 
     const fetchQuiz = async ()=> {
         setLoading(true)
@@ -52,11 +56,17 @@ const QuizPage = () => {
     useEffect(()=> {
         if(user?.token) {
             fetchQuiz()
-            const keys = Object.keys(answers);
-            const lastKey = keys[keys.length - 1];
-            const selected = answers[lastKey]
-            setSelectedOption(selected)
-            setQuestionIndex(Number(lastKey))
+            const answer = JSON.parse(localStorage.getItem(`${user.userInfo[0]._id}/${quizId}`))
+            console.log(answer)
+            if(answer && typeof answer === 'object' && Object.keys(answer).length > 0) {
+                console.log("answer: ", answer)
+                setAnswers(answer)
+                const keys = Object.keys(answers);
+                const lastKey = keys[keys.length - 1];
+                const selected = answers[lastKey]
+                setSelectedOption(selected)
+                setQuestionIndex(Number(lastKey))
+            }
         }
     }, [user])
 
@@ -106,7 +116,7 @@ const QuizPage = () => {
     }
 
     const submit = async(e)=> {
-        e.preventDefault()
+        if (e) e.preventDefault(); // فقط اگر e وجود داشت
         setLoading(true)
         setError(null)
         const response = await fetch("http://localhost:3000/api/quiz/submitQuiz", {
@@ -124,7 +134,7 @@ const QuizPage = () => {
             setLoading(false)
             setError(null)
             localStorage.removeItem(`${user.userInfo[0]._id}/${quizId}`)
-            console.log("ok")
+            navigate("/")
         }
 
         if(!response.ok) {
@@ -132,6 +142,13 @@ const QuizPage = () => {
             setError(json.message)
         }
     }
+
+    useEffect(()=> {
+        if(sec == 0) {
+            console.log("its done")
+            submit()
+        }
+    }, [sec])
 
 
     return ( 
