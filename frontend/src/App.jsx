@@ -27,6 +27,7 @@ import StudentPayments from "./pages/StudentPayments"
 import StudentProfileSetting from "./pages/StudentProfileSetting"
 import QuizPage from "./pages/QuizPage"
 import StudentQuizResult from "./pages/StudentQuizResult"
+import QuizStatcis from "./pages/QuizStatics"
 
 function App() {
   const {user} = useUser()
@@ -63,6 +64,7 @@ function App() {
             <Route path="studentdashboard/studentProfileSetting" element={<StudentProfileSetting />} />
             <Route path="studentdashboard/quizPage" element={<QuizPage />} />
             <Route path="studentdashboard/studentQuizPage/studentQuizResult" element={<StudentQuizResult />} />
+            <Route path="teacherdashboard/teacherQuizPage/quizStatics" element={<QuizStatcis />} />
           </Routes>
         </div>
       </BrowserRouter>

@@ -48,7 +48,7 @@ const TeacherQuizPage = () => {
     
                     <div className="md:flex space-y-2 md:space-x-5 md:flex-wrap">
                         {quizes.map(quiz=> (
-                            <div className="flex gap-2  bg-white border-[2px] border-black/10 p-2 rounded-2xl md:w-[40%]">
+                            <div onClick={()=> navigate("quizStatics?quizId="+quiz._id)} className="flex gap-2  bg-white border-[2px] border-black/10 p-2 rounded-2xl md:w-[40%]">
                                 <img src={'http://localhost:3000/uploads/thumbnails/'+quiz.courseId.thumbnail} className="rounded-2xl object-cover w-20" />
                                 <div>
                                     <p className="font-[700]">{quiz.courseId.title}</p>

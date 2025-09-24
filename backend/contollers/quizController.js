@@ -150,4 +150,46 @@ const quizResult = async (req, res) => {
     res.status(200).json({answer: userAnswers, quiz})
 }
 
-module.exports = {createQuiz, teacherQuizes, AllQuizes, getQuiz, submitQuiz, quizResult}
+const quizStatics = async (req, res) => {
+    const {quizId} = req.query
+
+    const findQuiz = await Quiz.findOne({_id: quizId})
+    const particiapteCount = await Answer.countDocuments({quizId: quizId})
+    const enrollment = await Enrollment.countDocuments({courseId: findQuiz.courseId})
+
+    const group = await Answer.aggregate([
+        { $match: { quizId: new mongoose.Types.ObjectId(quizId) } },
+        { $addFields: { numericScore: { $toInt: "$score" } } }, // تبدیل رشته به عدد
+        {
+            $facet: {
+            highScores: [
+                { $match: { numericScore: { $gte: 80, $lte: 100 } } },
+                { $count: "count" }
+            ],
+            midScores: [
+                { $match: { numericScore: { $gte: 60, $lt: 80 } } },
+                { $count: "count" }
+            ],
+            lowScores: [
+                { $match: { numericScore: { $lt: 60 } } },
+                { $count: "count" }
+            ]
+            }
+        }
+    ]);
+
+    const response = {
+        particiapteCount: particiapteCount,
+        enrollment: enrollment,
+        levels: [
+            {level: "High Score", count: group[0].highScores[0]?.count || 0},
+            {level: "Middle Score", count: group[0].midScores[0]?.count || 0},
+            {level: "Low Score", count: group[0].lowScores[0]?.count || 0}
+        ]
+    }
+
+    res.status(200).json([response])
+
+}
+
+module.exports = {createQuiz, teacherQuizes, AllQuizes, getQuiz, submitQuiz, quizResult, quizStatics}

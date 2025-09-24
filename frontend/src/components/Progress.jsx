@@ -12,7 +12,7 @@ const Progress = ({total, count}) => {
     }, [])
 
     return ( 
-        <div className={`mx-5 mb-10 relative progress aspect-square w-40 rounded-full`}>
+        <div className="mx-5 mb-10 relative progress aspect-square w-40 rounded-full">
             <div className="bg-white aspect-square w-25 rounded-full absolute left-[50%] -translate-x-[50%] top-[50%] -translate-y-[50%] text-center pt-10 innerProgress">{count * 100 / total}%</div>
         </div>
      );

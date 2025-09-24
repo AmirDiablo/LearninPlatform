@@ -78,7 +78,7 @@ const TeacherDashboard = () => {
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-2xl border-[2px] border-black/10 p-5 flex flex-col items-center mx-5 mt-2">
+                    <div className="bg-white mb-10 rounded-2xl border-[2px] border-black/10 p-5 flex flex-col items-center mx-5 mt-2">
                         <div className="text-[30px] text-green-600"><FaDollarSign /></div>
                         <div>
                             <p className="text-[30px] text-center">{item.income}</p>
