@@ -56,7 +56,16 @@ const AllQuizes = async (req, res)=> {
     const courses = await Enrollment.find({studentId: userId}, {courseId: 1, _id: 0})
     const coursesIds = courses.map(course=> course.courseId.toString())
     const quizes = await Quiz.find({courseId: {$in: coursesIds}}).populate("courseId")
-    res.status(200).json(quizes)
+
+    //quizes that user not participate in
+    const submittedQuizIds = await Answer.find({ userId }, { quizId: 1, _id: 0 })
+    const submittedIds = submittedQuizIds.map(s => s.quizId.toString())
+    const notAttemptedQuizzes = quizes.filter(q => !submittedIds.includes(q._id.toString()))
+
+    //quizes that user participate in 
+    const attemptedQuizzes = await Quiz.find({ _id: { $in: submittedIds } }).populate("courseId")
+    
+    res.status(200).json({particiapted: attemptedQuizzes, notParticipated: notAttemptedQuizzes})
 }
 
 const getQuiz = async (req, res) => {
@@ -113,8 +122,17 @@ const submitQuiz = async (req, res)=> {
             throw new Error("you submited it before")
         }
 
-        const submit = await Answer.findOneAndUpdate({quizId: quizId, studentId: userId}, {$set: {answers: answers, isFinished: true}})
-        console.log(submit)
+        const quiz = await Quiz.findOne({_id: quizId})
+
+        let corrects = 0;
+        Object.keys(answers).map(item=> { if(answers[item] == quiz.questions[Number(item)].answer) {corrects = corrects + 1} } )
+
+        const percent = corrects * 100 / quiz.questions.length
+
+        console.log(corrects, percent)
+
+
+        const submit = await Answer.findOneAndUpdate({quizId: quizId, studentId: userId}, {$set: {answers: answers, isFinished: true, score: percent}})
         res.status(200).json(submit)
     }
     catch(error) {
