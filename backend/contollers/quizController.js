@@ -140,4 +140,14 @@ const submitQuiz = async (req, res)=> {
     }
 }
 
-module.exports = {createQuiz, teacherQuizes, AllQuizes, getQuiz, submitQuiz}
+const quizResult = async (req, res) => {
+    const userId = req.user._id.toString()
+    const {quizId} = req.query
+
+    const userAnswers = await Answer.findOne({studentId: userId, quizId}).populate("studentId")
+    const quiz = await Quiz.findOne({_id: quizId})
+
+    res.status(200).json({answer: userAnswers, quiz})
+}
+
+module.exports = {createQuiz, teacherQuizes, AllQuizes, getQuiz, submitQuiz, quizResult}

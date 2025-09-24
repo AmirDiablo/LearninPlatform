@@ -32,7 +32,7 @@ const TeachersDashTop = ({active}) => {
             <div onClick={open} className="bg-orange-500 p-2 aspect-square w-12 rounded-2xl text-white text-2xl flex justify-center items-center mx-5"><LuSquareMenu /></div>
         
             <div>
-                <ul className="bg-white fixed bottom-0 top-20 w-[50%] -left-[50%] dashboardNav transition-all duration-300 lg:left-[0%] lg:w-[30%]">
+                <ul className="bg-white fixed bottom-0 top-20 w-[50%] -left-[50%] dashboardNav transition-all duration-300 lg:left-[0%] lg:w-[30%] z-10">
                     {size < 1024 && <div onClick={close} className="text-2xl p-5"><RxCross1 className="ml-auto"/></div>}
                     <Link to={role == "teacher" ? "/teacherdashboard" : "/studentdashboard"}><li className={active == "teacherdashboard" || active == "studentdashboard" ? "flex items-center gap-2 p-5 active" : "flex items-center gap-2 p-5"}><TbLayoutDashboardFilled />Dashboard</li></Link>
                     <Link to={role == "teacher" ? "/teacherdashboard/teacherCoursesPage" : "/studentdashboard/studentCoursesPage"}><li className={active == "teacherCoursesPage" || active == "studentCoursesPage" ? "flex items-center gap-2 p-5 active" : "flex items-center gap-2 p-5"}><FaVideo />Courses</li></Link>

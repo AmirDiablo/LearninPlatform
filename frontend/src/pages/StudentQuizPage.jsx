@@ -74,7 +74,7 @@ const StudentQuizPage = () => {
 
                         <p className="mb-2 font-[600] mt-20">Submitted Quizes</p>
                         {notSubmittedQuizes.map(quiz=> (
-                            <div className="flex gap-2 bg-white border-[2px] border-black/10 p-2 rounded-2xl md:w-[40%]">
+                            <div className="flex gap-2 bg-white border-[2px] border-black/10 p-2 rounded-2xl md:w-[40%]" onClick={()=> navigate("studentQuizResult?q="+quiz._id)}>
                                 <img src={'http://localhost:3000/uploads/thumbnails/'+quiz.courseId.thumbnail} className="rounded-2xl object-cover w-20" />
                                 <div onClick={()=> setIsOpen(true)}>
                                     <p className="font-[700]">{quiz.courseId.title}</p>
