@@ -3,18 +3,23 @@ import { FaPlay } from "react-icons/fa";
 import { FaPause } from "react-icons/fa";
 import { HiOutlineSpeakerWave } from "react-icons/hi2";
 import { HiOutlineSpeakerXMark } from "react-icons/hi2";
+import { useUser } from "../context/userContext";
 
 
-const VideoPlayer = ({videoURL, videoTitle}) => {
+const VideoPlayer = ({videoURL, videoTitle, lessonId, curriculumId, courseId}) => {
+    const {user} = useUser()
     const [isPlaying, setIsPlaying] = useState(false);
+    const [counted, setCounted] = useState(false)
     const [volume, setVolume] = useState(1);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [playbackRate, setPlaybackRate] = useState(1);
     const [currentVideo, setCurrentVideo] = useState({src: videoURL, title: videoTitle}); //videoItems[0]
-     const videoRef = useRef(null);
+    const videoRef = useRef(null);
     const progressRef = useRef(null);
     const [isMuted, setIsMuted] = useState(false)
+    const [error, setError] = useState(null)
+    const [loading, setLoading] = useState(false)
 
     useEffect(()=> {
         setCurrentVideo({src: videoURL, title: videoTitle})
@@ -47,6 +52,37 @@ const VideoPlayer = ({videoURL, videoTitle}) => {
             video.removeEventListener('timeupdate', updateTime);
         };
     }, [currentVideo]);
+
+    const attendance = async ()=> {
+        const response = await fetch("http://localhost:3000/api/enrollment/attendance", {
+            method: "PATCH",
+            body: JSON.stringify({courseId, curriculumId, lessonId}),
+            headers: {
+                "Authorization" : `Bearer ${user.token}`,
+                "Content-Type" : "application/json"
+            }
+        })
+        const json = await response.json()
+
+        if(response.ok) {
+            console.log("attendance submitted")
+        }
+
+        if(!response.ok) {
+            console.log('attendance failed')
+        }
+    }
+
+    useEffect(()=> {
+        console.log(courseId)
+        if(courseId) {
+            const percent = currentTime * 100 / duration
+            if(percent >= 70 && counted == false) {
+                attendance()
+                setCounted(true)
+            }
+        }
+    },[currentTime, courseId])
 
     // کنترل پخش و توقف
     const togglePlay = () => {

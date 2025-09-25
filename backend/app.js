@@ -8,6 +8,7 @@ const userRoutes = require("./routes/accountRoutes")
 const courseRoutes = require("./routes/courseRoutes")
 const quizRoutes = require("./routes/quizRoutes")
 const paymentRoutes = require("./routes/paymentRoutes")
+const enrollmentRoutes = require("./routes/enrollmentRoutes")
 const path = require("path")
 const schedule = require("./schedule")
 
@@ -29,6 +30,7 @@ app.use("/api/user", userRoutes)
 app.use("/api/course", courseRoutes)
 app.use("/api/quiz", quizRoutes)
 app.use("/api/payment", paymentRoutes)
+app.use("/api/enrollment", enrollmentRoutes)
 
 mongoose.connect(process.env.MONGO_URI)
 .then(()=> {

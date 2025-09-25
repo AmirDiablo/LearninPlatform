@@ -398,8 +398,6 @@ const playLesson = async (req, res) => {
   const { courseId, sectionId, lessonId } = req.body;
   const userId = req.user._id.toString(); // فرضاً از JWT برای احراز هویت
 
-  console.log(courseId, sectionId, lessonId)
-
   // 1. اعتبارسنجی نقش کاربر
   const user = await Account.findById(userId);
   if (!user || !user.roles == 'student') {

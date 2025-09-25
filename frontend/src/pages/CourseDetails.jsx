@@ -13,6 +13,8 @@ import { format } from "date-fns";
 
 const CourseDetails = () => {
     const id = useLocation().search.split("=")[1]
+    const [lessonId, setLessonId] = useState()
+    const [curriculumId, setCuriculumId] = useState()
     const [error, setError] = useState()
     const [loading, setLoading] = useState(false)
     const [isRating, setIsRating] = useState(false)
@@ -101,6 +103,8 @@ const CourseDetails = () => {
             setIsPlaying(true)
             setVideoTitle(json.lessonTitle)
             setVideoURL(json.videoURL)
+            setLessonId(lessonId)
+            setCuriculumId(sectionId)
         }
 
         if(!response.ok) {
@@ -154,7 +158,7 @@ const CourseDetails = () => {
            {course.map(c=> (
                 <div className="flex flex-col  w-[100%] md:px-10 md:gap-10 md:flex-row">
                 <div className="md:w-[50%] space-y-5">
-                    {isPlaying ? <VideoPlayer videoURL={videoURL} videoTitle={videoTitle} /> : <img src={'http://localhost:3000/uploads/thumbnails/'+c.thumbnail} className="object-cover rounded-2xl w-[100%]" />}
+                    {isPlaying ? <VideoPlayer videoURL={videoURL} videoTitle={videoTitle} courseId={id} lessonId={lessonId} curriculumId={curriculumId}  /> : <img src={'http://localhost:3000/uploads/thumbnails/'+c.thumbnail} className="object-cover rounded-2xl w-[100%]" />}
                     <div className="flex justify-between *:text-xl">
                         <div className="flex items-center"><PiStudentBold /> {c.enrollmentCount}</div>
                         <div className="flex items-center"><GrMoney /> {c.price}$</div>

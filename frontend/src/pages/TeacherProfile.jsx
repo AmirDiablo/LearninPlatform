@@ -59,45 +59,64 @@ const TeacherProfile = () => {
     }, [])
 
     return ( 
-        <div className="lg:flex">
+        <div className="lg:flex lg:h-screen lg:overflow-hidden">
 
-            <div className="lg:w-[30%] xl:ml-15">
-                {info.map(item=> (
-                <div>
-                    <div className="flex items-center gap-10 mx-5">
-                        <img src={"http://localhost:3000/uploads/profiles/"+item.userId.profile} className="rounded-full object-cover aspect-square w-40" />
-                        <div>
-                            <p className="font-[700] text-[23px]">{item.userId.username}</p>
-                            <p className="text-black/50">Web developer</p>
-                            <div className="flex *:text-xl w-max">
-                                {(item.rating.toString().split(".")[1] !== undefined && 0 < item.rating && item.rating < 1) ? <FaRegStarHalfStroke className="text-yellow-500 " /> : <div data-rate="1">{1 <= item.rating ? <FaStar className="text-yellow-500" /> : <CiStar  />}</div>}
-                                {(item.rating.toString().split(".")[1] !== undefined && 1 < item.rating && item.rating < 2) ? <FaRegStarHalfStroke className="text-yellow-500 " /> : <div data-rate="2">{2 <= item.rating ? <FaStar className="text-yellow-500" /> : <CiStar  />}</div>}
-                                {(item.rating.toString().split(".")[1] !== undefined && 2 < item.rating && item.rating < 3) ? <FaRegStarHalfStroke className="text-yellow-500 " /> : <div data-rate="3">{3 <= item.rating ? <FaStar className="text-yellow-500" /> : <CiStar  />}</div>}
-                                {(item.rating.toString().split(".")[1] !== undefined && 3 < item.rating && item.rating < 4) ? <FaRegStarHalfStroke className="text-yellow-500 " /> : <div data-rate="4">{4 <= item.rating ? <FaStar className="text-yellow-500" /> : <CiStar  />}</div>}
-                                {(item.rating.toString().split(".")[1] !== undefined && 4 < item.rating && item.rating < 5) ? <FaRegStarHalfStroke className="text-yellow-500 " /> : <div data-rate="5">{5 <= item.rating ? <FaStar className="text-yellow-500" /> : <CiStar  />}</div>}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="mx-5 mt-5 flex gap-2">
-                        {item.instagram && <Link target="_blank" to={"https://www.instagram.com/"+item.instagram} className="bg-white p-2 rounded-[10px] border-[2px] border-black/10"><FaInstagram className="text-3xl text-purple-700"/></Link>}
-                        {item.linkedin && <Link target="_blank" to={"https://www.linkedin.com/"+item.linkedin} className="p-2 bg-white rounded-[10px] border-[2px] border-black/10"><BsLinkedin className="text-3xl text-blue-600"/></Link>}
-                        {item.youtube && <Link target="_blank" to={"https://www.youtube.com/"+item.youtube} className="p-2 bg-white rounded-[10px] border-[2px] border-black/10"><FaYoutube className="text-red-600 text-3xl" /></Link>}
-                    </div>
-
-                    <p className="mx-5 mt-5 font-[600]">{item.bio}</p>
-                </div>
-            ))}
+  {/* سمت چپ: اطلاعات کاربر */}
+  <div className="lg:w-[30%] overflow-y-hidden p-5">
+    {info.map(item => (
+      <div key={item._id}>
+        <div className="flex items-center gap-5">
+          <img src={`http://localhost:3000/uploads/profiles/${item.userId.profile}`} className="rounded-full object-cover aspect-square w-32" />
+          <div>
+            <p className="font-bold text-xl">{item.userId.username}</p>
+            <p className="text-black/50">Web developer</p>
+            <div className="flex *:text-xl mt-2">
+              {[1, 2, 3, 4, 5].map(rate => {
+                const decimal = item.rating % 1;
+                const full = Math.floor(item.rating);
+                return (
+                  <div key={rate}>
+                    {rate <= full
+                      ? <FaStar className="text-yellow-500" />
+                      : (rate - 1 < item.rating && decimal > 0)
+                        ? <FaRegStarHalfStroke className="text-yellow-500" />
+                        : <CiStar />}
+                  </div>
+                );
+              })}
             </div>
-            
-            
-            <div className="flex justify-center flex-wrap lg:absolute lg:whitespace-nowrap lg:right-0 lg:overflow-y-auto mx-5 space-x-2 space-y-2 mt-10 lg:w-[70%] lg:h-200">
-                {courses.map(item=> (
-                    <img onClick={()=> navigate("/courseDetails?q="+item._id)} src={'http://localhost:3000/uploads/thumbnails/'+item.thumbnail} className="rounded-2xl object-cover aspect-square w-[45%] lg:w-[25%] max-w-70" />
-                ))}
-            </div>
-            
+          </div>
         </div>
+
+        <div className="flex gap-2 mt-4">
+          {item.instagram && <Link to={`https://www.instagram.com/${item.instagram}`} target="_blank" className="p-2 bg-white rounded-lg border border-black/10"><FaInstagram className="text-2xl text-purple-700" /></Link>}
+          {item.linkedin && <Link to={`https://www.linkedin.com/${item.linkedin}`} target="_blank" className="p-2 bg-white rounded-lg border border-black/10"><BsLinkedin className="text-2xl text-blue-600" /></Link>}
+          {item.youtube && <Link to={`https://www.youtube.com/${item.youtube}`} target="_blank" className="p-2 bg-white rounded-lg border border-black/10"><FaYoutube className="text-2xl text-red-600" /></Link>}
+        </div>
+
+        <p className="mt-4 font-semibold break-words">{item.bio}</p>
+      </div>
+    ))}
+  </div>
+
+  {/* سمت راست: دوره‌ها */}
+  <div className="lg:w-[70%] overflow-y-auto p-5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {courses.map(item => (
+        <img
+          key={item._id}
+          onClick={() => navigate(`/courseDetails?q=${item._id}`)}
+          src={`http://localhost:3000/uploads/thumbnails/${item.thumbnail}`}
+          className="rounded-2xl object-cover aspect-square w-full cursor-pointer"
+        />
+      ))}
+    </div>
+  </div>
+
+</div>
+
+
+
      );
 }
  
