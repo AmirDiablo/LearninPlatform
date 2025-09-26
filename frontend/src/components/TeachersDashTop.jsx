@@ -29,7 +29,7 @@ const TeachersDashTop = ({active}) => {
 
     return ( 
         <div>
-            <div onClick={open} className="bg-orange-500 p-2 aspect-square w-12 rounded-2xl text-white text-2xl flex justify-center items-center mx-5"><LuSquareMenu /></div>
+            <div onClick={open} className="bg-orange-500 navButton p-2 aspect-square w-12 rounded-2xl text-white text-2xl flex justify-center items-center mx-5"><LuSquareMenu /></div>
         
             <div>
                 <ul className="bg-white fixed bottom-0 top-20 w-[50%] -left-[50%] dashboardNav transition-all duration-300 lg:left-[0%] lg:w-[30%] z-10">

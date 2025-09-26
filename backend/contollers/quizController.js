@@ -51,22 +51,46 @@ const teacherQuizes = async(req, res) => {
     }
 }
 
-const AllQuizes = async (req, res)=> {
-    const userId = req.user._id.toString()
-    const courses = await Enrollment.find({studentId: userId}, {courseId: 1, _id: 0})
-    const coursesIds = courses.map(course=> course.courseId.toString())
-    const quizes = await Quiz.find({courseId: {$in: coursesIds}}).populate("courseId")
+const AllQuizes = async (req, res) => {
+    try {
+    const studentId = req.user._id; // از توکن JWT
 
-    //quizes that user not participate in
-    const submittedQuizIds = await Answer.find({ userId }, { quizId: 1, _id: 0 })
-    const submittedIds = submittedQuizIds.map(s => s.quizId.toString())
-    const notAttemptedQuizzes = quizes.filter(q => !submittedIds.includes(q._id.toString()))
+    // 1. پیدا کردن دوره‌های ثبت‌نام‌شده توسط دانشجو
+    const enrollments = await Enrollment.find({ studentId }).select('courseId');
+    const courseIds = enrollments.map(enrollment => enrollment.courseId);
 
-    //quizes that user participate in 
-    const attemptedQuizzes = await Quiz.find({ _id: { $in: submittedIds } }).populate("courseId")
-    
-    res.status(200).json({particiapted: attemptedQuizzes, notParticipated: notAttemptedQuizzes})
-}
+    // 2. پیدا کردن تمام quizzes مرتبط با دوره‌های ثبت‌نام‌شده
+    const allQuizzes = await Quiz.find({ courseId: { $in: courseIds } }).select('_id time questions title courseId').populate("courseId");
+
+    if (!allQuizzes.length) {
+      return res.status(200).json({
+        message: 'هیچ کوییزی یافت نشد',
+        participated: [],
+        notParticipated: [],
+      });
+    }
+
+    // 3. پیدا کردن quizzes که دانشجو شرکت کرده (بر اساس Answer)
+    const answeredQuizzes = await Answer.find({ studentId }).select('quizId');
+    const answeredQuizIds = answeredQuizzes.map(answer => answer.quizId.toString());
+
+    // 4. جداسازی quizzes شرکت‌کرده و شرکت‌نکرده
+    const participated = allQuizzes.filter(quiz => answeredQuizIds.includes(quiz._id.toString()));
+    const notParticipated = allQuizzes.filter(quiz => !answeredQuizIds.includes(quiz._id.toString()));
+
+    console.log("participated: "+participated)
+
+    res.status(200).json({
+      message: 'لیست کوییزها',
+      participated,
+      notParticipated,
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: 'خطا در سرور', error: error.message });
+  }
+};
+
 
 const getQuiz = async (req, res) => {
     try{

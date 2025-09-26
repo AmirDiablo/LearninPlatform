@@ -22,16 +22,6 @@ export const UserProvider = ({ children })=> {
         setUserId(null)
     }
 
-    const updateFollowings = (userId)=> {
-        const Exist = followings.includes(userId)
-
-        if(Exist) {
-            setFollowings( followings.filter( item=> item !== userId ) )
-        }else{
-            setFollowings([...followings, userId])
-        }
-    }
-
 
     useEffect(()=> {
         const user = JSON.parse(localStorage.getItem('user'))
@@ -49,12 +39,12 @@ export const UserProvider = ({ children })=> {
             fetchUser(user.id)
         }
 
-    }, [])
+    }, [ ,userId])
 
     console.log("user from context: ", user);
     
     return (
-        <UserContext.Provider value={{user, followings, login, updateFollowings, updateProfile, logout}}>
+        <UserContext.Provider value={{user, setUser, login, updateProfile, logout}}>
             {children}
         </UserContext.Provider>
     )

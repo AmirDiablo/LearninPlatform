@@ -4,8 +4,10 @@ import { FaGoogle } from "react-icons/fa";
 import { FaFacebookF } from "react-icons/fa";
 import { FaLinkedinIn } from "react-icons/fa";
 import { useState } from "react";
+import { useUser } from "../context/userContext";
 
 const TeacherLogin = () => {
+    const {login} = useUser()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState()
@@ -34,6 +36,7 @@ const TeacherLogin = () => {
             localStorage.setItem("user", JSON.stringify(json))
             setError(null)
             setLoading(false)
+            login(json._id)
             navigate("/")
         }
     }

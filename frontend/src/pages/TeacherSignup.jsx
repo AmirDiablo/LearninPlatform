@@ -114,7 +114,7 @@ const TeacherSignup = () => {
         setLoading(false)
         localStorage.setItem("user", JSON.stringify(json))
         console.log(JSON.stringify(json))
-        login(json)
+        login(json._id)
         setStep(4)
     }
     if(!response.ok) {

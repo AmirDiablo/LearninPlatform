@@ -11,6 +11,23 @@ const StudentCoursesPage = () => {
     const [courses, setCourses] = useState([])
     const navigate = useNavigate()
 
+    useEffect(()=> {
+
+        let width = window.innerWidth
+        if(width >= 1024) {
+            document.querySelector(".navButton").style.display = "none"
+        }
+
+        window.addEventListener("resize", ()=> {
+            const width = window.innerWidth
+            if(width >= 1024) {
+                document.querySelector(".navButton").style.display = "none"
+            }else{
+                document.querySelector(".navButton").style.display = "flex"
+            }
+        })
+    }, [])
+
     const fetchCourses = async ()=> {
         const response = await fetch("http://localhost:3000/api/course/bought", {
             method: "GET",

@@ -29,7 +29,7 @@ const Login = () => {
         if(response.ok) {
             localStorage.setItem("user", JSON.stringify(json))
             /* setIsLoading(false) */
-            login(json)
+            login(json._id)
             setError(null)
             navigate("/")
         }

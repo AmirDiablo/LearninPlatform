@@ -37,6 +37,23 @@ const StudentDashboard = () => {
     }
 
     useEffect(()=> {
+
+        let width = window.innerWidth
+        if(width >= 1024) {
+            document.querySelector(".navButton").style.display = "none"
+        }
+
+        window.addEventListener("resize", ()=> {
+            const width = window.innerWidth
+            if(width >= 1024) {
+                document.querySelector(".navButton").style.display = "none"
+            }else{
+                document.querySelector(".navButton").style.display = "flex"
+            }
+        })
+    }, [])
+
+    useEffect(()=> {
         if(user?.token) {
             fetchUser()
         }

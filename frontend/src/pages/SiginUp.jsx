@@ -109,7 +109,7 @@ const SignUp = () => {
         setLoading(false)
         localStorage.setItem("user", JSON.stringify(json))
         console.log(JSON.stringify(json))
-        login(json)
+        login(json._id)
         navigate('/')
     }
     if(!response.ok) {
