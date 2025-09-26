@@ -303,10 +303,41 @@ const Studentinfos = async (req, res)=> {
     let account = await Account.findOne({_id: userId, roles: "student"})
 
     if(!account) {
-        res.status(401).json({message: "only students can visit this page"})
-    }else{
-        res.status(200).json(account)
-    }    
+        throw new Error("only students can visit this page")
+    }
+
+    const studentEnrollments = await Enrollment.find({studentId: userId}, {courseId: 1, progress: 1, _id: 0})
+    const coursesIds = studentEnrollments.map(item=> item.courseId)
+    const findCourse = await Course.find({_id: {$in: coursesIds}})
+    const courses = [];
+    for(let i=0; i<findCourse.length; i++) {
+        courses.push({course: findCourse[i], progress: studentEnrollments[i].progress})
+    }
+
+    const categories = findCourse.map(item=> item.category)
+    const allCategories = []
+    for(let i=0; i<categories.length; i++) {
+        for(let j=0; j<categories[i].length; j++) {
+            allCategories.push(categories[i][j])
+        }
+    } 
+
+    const uniqueCategories = [...new Set(allCategories)];
+    
+    const Recommended = await Course.find({category: {$in: uniqueCategories}, _id: {$nin: coursesIds}})
+
+    console.log(Recommended)
+    
+    const response = {
+        _id: account._id,
+        username: account.username,
+        profile: account.profile,
+        courses: courses,
+        recommended: Recommended
+    }
+
+    res.status(200).json(response)
+    
 }
 
 const studentEditProfile = async(req, res) => {

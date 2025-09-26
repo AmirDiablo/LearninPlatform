@@ -2,6 +2,8 @@ import { useUser } from "../context/userContext";
 import { FaJs } from "react-icons/fa";
 import TeachersDashTop from "../components/TeachersDashTop";
 import { useEffect, useState } from "react";
+import { FaCode } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 
 const StudentDashboard = () => {
@@ -9,6 +11,7 @@ const StudentDashboard = () => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
     const [info, setInfo] = useState([])
+    const navigate = useNavigate()
 
     const fetchUser = async ()=> {
         setLoading(true)
@@ -43,7 +46,7 @@ const StudentDashboard = () => {
         <div>
 
             <div className="lg:w-[30%]">
-                <TeachersDashTop active={'teacherdashboard'} /> 
+                <TeachersDashTop active={'studentdashboard'} /> 
             </div>
             
             <div className="lg:w-[70%] lg:absolute lg:right-0">
@@ -54,34 +57,25 @@ const StudentDashboard = () => {
 
                 <div className="mx-5 mt-10">
                     <p className="text-[18px]">My Courses</p>
-                    <div className="w-[100%] flex justify-between gap-5 bg-white p-5 mt-2">
-                        <div className="w-[100%]">
-                            <strong>python for beginners</strong>
-                            <div className="w-[100%] h-[10px] bg-red-200 rounded-full"><div className="w-[40%] bg-orange-500 h-[100%] rounded-full"></div></div>
-                        </div>
-                        <button className="bg-orange-500 text-white text-center rounded-[7px] px-5 py-2">Continue</button>
+                    {info?.courses?.map(item=> (
+                        <div className="w-[100%] flex justify-between gap-5 bg-white p-5 mt-2">
+                            <div className="w-[100%]">
+                                <strong>{item.course.title}</strong>
+                                <div className="w-[100%] h-[10px] bg-red-200 rounded-full"><div style={{width: `${item?.progress}%`}} className={`bg-orange-500 h-[100%] rounded-full `}></div></div>
+                            </div>
+                            <button onClick={()=> navigate("/courseDetails?courseId="+item.course._id)} className="bg-orange-500 text-white text-center rounded-[7px] px-5 py-2">Continue</button>
                     </div>
-
-                    <div className="w-[100%] flex justify-between gap-5 bg-white p-5 mt-2">
-                        <div className="w-[100%]">
-                            <strong>Java for beginners</strong>
-                            <div className="w-[100%] h-[10px] bg-red-200 rounded-full"><div className="w-[70%] bg-orange-500 h-[100%] rounded-full"></div></div>
-                        </div>
-                        <button className="bg-orange-500 text-white text-center rounded-[7px] px-5 py-2">Continue</button>
-                    </div>
+                    ))}
                 </div>
 
                 <div className="mx-5 mt-10">
                     <p className="text-[18px]">Recommended</p>
-                    <div className="flex items-center gap-5 p-2 bg-white rounded-2xl mt-2">
-                        <div className="text-6xl text-orange-500"><FaJs className="rounded-2xl"/></div>
-                        <p className="text-xl">JavaScript fundamentals</p>
-                    </div>
-
-                    <div className="flex items-center gap-5 p-2 bg-white rounded-2xl mt-2">
-                        <div className="text-6xl text-orange-500"><FaJs className="rounded-2xl"/></div>
-                        <p className="text-xl">JavaScript fundamentals</p>
-                    </div>
+                    {info?.recommended?.map(item=> (
+                        <div onClick={()=> navigate("/courseDetails?courseId="+item._id)} className="flex items-center gap-5 p-2 bg-white rounded-2xl mt-2">
+                            <div className="text-4xl text-white bg-orange-500 p-2 rounded-xl"><FaCode className="rounded-2xl"/></div>
+                            <p className="text-xl">{item.title}</p>
+                        </div>
+                    ))}
                 </div>
 
 

@@ -41,7 +41,7 @@ const StudentCoursesPage = () => {
 
     return ( 
         <div className="lg:absolute lg:right-0 lg:w-[70%]">
-            <TeachersDashTop active={'studentdashboard/studentCoursesPage'} />
+            <TeachersDashTop active={'studentCoursesPage'} />
 
             <div className="w-[85%] mx-auto flex flex-wrap justify-center md:space-x-5 ">
 
