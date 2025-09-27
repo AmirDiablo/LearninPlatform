@@ -62,7 +62,7 @@ const TeacherCoursesPage = () => {
                                     <img src={"http://localhost:3000/uploads/profiles/"+course.userId.profile} className="w-10 rounded-full object-cover"/>
                                     <p className="text-[15px]">{course.userId.username}</p>
                                 </div>
-                                <button onClick={()=> navigate("/editCourse?q="+course._id, {state: {course: course}})} className="bg-orange-500 hover:cursor-pointer text-white rounded-[7px] px-5 py-2">Edit</button>
+                                <button onClick={()=> navigate("editCourse?q="+course._id, {state: {course: course}})} className="bg-orange-500 hover:cursor-pointer text-white rounded-[7px] px-5 py-2">Edit</button>
                             </div>
                             <strong>{course.title}</strong>
                             <p className="break-words">{course.description}</p>

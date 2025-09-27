@@ -28,8 +28,7 @@ const Home = () => {
                     </div>
                 </div>
             </div>
-
-
+            
 
             <div className="mx-5 columns-2 md:columns-4 mt-20 md:mx-20">
 

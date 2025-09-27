@@ -195,6 +195,13 @@ footer {
     color: white;
     font-size: 14px;
 }
+/************************************/
+.flower {
+  width: 100px; /* adjust to control the size */
+  aspect-ratio: 1;
+  --g:/16.324% 16.324% radial-gradient(#000 calc(71% - 1px),#0000 71%) no-repeat;
+  mask: radial-gradient(100% 100%,#000 calc(41.034% - 1px),#0000 41.034%) subtract,100% 50% var(--g),96.194% 69.134% var(--g),85.355% 85.355% var(--g),69.134% 96.194% var(--g),50% 100% var(--g),30.866% 96.194% var(--g),14.645% 85.355% var(--g),3.806% 69.134% var(--g),0% 50% var(--g),3.806% 30.866% var(--g),14.645% 14.645% var(--g),30.866% 3.806% var(--g),50% 0% var(--g),69.134% 3.806% var(--g),85.355% 14.645% var(--g),96.194% 30.866% var(--g);
+}
 /*********************************/
 .progress{
     box-shadow: inset 1px 1px 10px;

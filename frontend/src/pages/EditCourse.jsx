@@ -9,9 +9,12 @@ import {useUser} from "../context/userContext"
 import EditLesson from "../components/EditLesson";
 import AddCurriculum from "../components/AddCurriculum";
 import { FaPlus } from "react-icons/fa6";
+import { GiCheckMark } from "react-icons/gi";
+import { RxCross2 } from "react-icons/rx";
 
 
 const EditCourse = () => {
+    const [discount, setDiscount] = useState(0)
     const {state} = useLocation()
     const {course} = state
     const [isOpen, setIsOpen] = useState(false)
@@ -23,6 +26,7 @@ const EditCourse = () => {
     const [error, setError] = useState()
     const [loading, setLoading] = useState(false)
     const {user} = useUser()
+    const [serverResponse, setServerResponse] = useState()
 
     const handleToggle = (index) => {
         setOpenSections((prev) => ({
@@ -62,9 +66,35 @@ const EditCourse = () => {
 
     }
 
+    const changeDiscount = async()=> {
+        setLoading(true)
+        setError(null)
+        const response = await fetch("http://localhost:3000/api/course/changeDiscount", {
+            method: "PATCH",
+            body: JSON.stringify({courseId: course._id, discount}),
+            headers: {
+                "Authorization" : `Bearer ${user.token}`,
+                "Content-Type" : "application/json"
+            }
+        })
+
+        const json = await response.json()
+
+        if(response.ok) {
+            setLoading(false)
+            setError(null)
+            setServerResponse(json.message)
+        }
+
+        if(!response.ok) {
+            setError(json.message)
+            setLoading(false)
+        }
+    }
+
     
     return ( 
-        <div className="flex flex-col px-5">
+        <div className="flex flex-col px-5 mb-10">
 
             
             <div className="flex flex-col  w-[100%] md:px-10 md:gap-10 md:flex-row">
@@ -77,6 +107,12 @@ const EditCourse = () => {
                         </div>                
                         <strong>{course.title}</strong>
                         <p>{course.description}</p>
+                    </div>
+
+                    <label className="block mt-10 text-black/50 translate-y-[10px]">if you want you can set discount in percent to this course</label>
+                    <div className="flex">
+                        <input onChange={(e)=> setDiscount(e.target.value)} value={discount} placeholder="Discount" className="bg-white border-2 border-black/20 rounded-[7px] p-5" type="number" />
+                        <button onClick={changeDiscount} className="bg-orange-500 text-white px-5 py-2 rounded-[7px] text-center"><GiCheckMark /></button>
                     </div>
                 </div>
 
@@ -104,6 +140,9 @@ const EditCourse = () => {
                     <button onClick={()=> {setIsAddingCurriculum(true)}} className="text-orange-500 font-[700] flex items-center place-self-center justify-center gap-2">Add Curriculum <FaPlus /></button>
                 </div>
             </div>
+
+            {serverResponse && <div className="bg-green-200 message w-[70%]  px-5 py-1 text-center rounded-[7px] md:w-[30%] absolute left-[50%] -translate-x-[50%] bottom-10"><RxCross2 className="float-end mt-2" onClick={()=> setServerResponse(null)} /><p className="py-5">{serverResponse}</p></div>}
+            {error && <div className="bg-red-200 message w-[70%]  px-5 py-1 text-center rounded-[7px] md:w-[30%] absolute left-[50%] -translate-x-[50%] bottom-10"><RxCross2 className="float-end mt-2" onClick={()=> setServerResponse(null)} /><p className="py-5">{error}</p></div>}
 
             {isEditing && <div className="bg-black/20 fixed top-0 bottom-0 w-[100%]"></div>}
             {isAddingCurriculum && <div className="bg-black/20 fixed top-0 bottom-0 w-[100%]"></div>}

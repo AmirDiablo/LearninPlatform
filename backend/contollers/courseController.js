@@ -562,5 +562,23 @@ const bought = async (req, res)=> {
 
 }
 
+const changeDiscount = async(req, res)=> {
+    const teacherId = req.user._id.toString()
+    const {courseId, discount} = req.body
 
-module.exports = {createCourse, validCategories, addCurriculm, teacherCourses, addLesson, deleteLesson, editLesson, allCourses, findCourses, courseDetails, playLesson, rate, reviews, enrollmentStatics, createLessons, bought}
+    const isTeacher = await Teacher.findOne({userId: teacherId})
+    if(!isTeacher) {
+      res.status(401).json({message: "only teachers can do this action"})
+    }
+
+    const isOwner = await Course.findOne({userId: teacherId, _id: courseId})
+    if(!isOwner) {
+      res.status(401).json({message: "only the owner of this course can change the course infos"})
+    }
+
+    const change = await Course.findOneAndUpdate({_id: courseId}, {$set: {discount: discount}})
+    res.status(200).json({message: "discount submitted successfully"})
+}
+
+
+module.exports = {createCourse, validCategories, addCurriculm, teacherCourses, addLesson, deleteLesson, editLesson, allCourses, findCourses, courseDetails, playLesson, rate, reviews, enrollmentStatics, createLessons, bought, changeDiscount}

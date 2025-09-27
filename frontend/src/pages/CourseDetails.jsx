@@ -161,7 +161,7 @@ const CourseDetails = () => {
                     {isPlaying ? <VideoPlayer videoURL={videoURL} videoTitle={videoTitle} courseId={id} lessonId={lessonId} curriculumId={curriculumId}  /> : <img src={'http://localhost:3000/uploads/thumbnails/'+c.thumbnail} className="object-cover rounded-2xl w-[100%]" />}
                     <div className="flex justify-between *:text-xl">
                         <div className="flex items-center"><PiStudentBold /> {c.enrollmentCount}</div>
-                        <div className="flex items-center"><GrMoney /> {c.price}$</div>
+                        <div className="flex items-center gap-1"><GrMoney /> <div className=""><p className="line-through decoration-red-500">{c.price}$</p> <p>{c.price - c.discount * c.price / 100}$</p></div></div>
                         <div className="flex items-center"><FaStar /> {c.rating}</div>
                         <div className="flex items-center"><IoTimerOutline />210min</div>
                     </div>

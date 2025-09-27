@@ -60,6 +60,7 @@ const Courses = () => {
                 {courses.map(course=> (
                     <div onClick={()=> navigate("/courseDetails?id="+course._id)} className="rounded-2xl my-10 flex flex-col  w-[100%] shadow-[8px_8px_16px_#bebebe,_-8px_-8px_16px_#ffffff] md:w-[48%] md:max-w-[400px]">
                         <img src={'http://localhost:3000/uploads/thumbnails/'+course.thumbnail} className="object-cover rounded-t-2xl aspect-video" />
+                        {course.discount != 0 && <div className="flower bg-yellow-400 absolute flex items-center justify-center font-[600] -rotate-45">{course.discount}%</div>}
                         <div className="rounded-b-2xl bg-gray-200 h-[100%] p-5">
                             <div className="flex justify-between items-center">
                                 <div className="flex items-center justify-between w-[100%]">
