@@ -312,18 +312,17 @@ const editLesson = async(req, res) => {
 }
 
 const allCourses = async (req, res) => {
-  const page = Number(req.query.page) || 1
-  const countPerPage = 10
-  const skip =( page - 1 )* countPerPage
-
   try{
+    const page = Number(req.query.page) || 1
+    const countPerPage = 10
+    const skip =( page - 1 )* countPerPage
     const courseCount = await Course.countDocuments({})
     const pageCount = Math.ceil(courseCount / countPerPage)
     const courses = await Course.find({}).skip(skip).limit(10).populate('userId')
     res.status(200).json({courses, pageCount})
   }
   catch(error) {
-    res.status(400).json(error)
+    res.status(400).json({error: error.message})
   }
 }
 
@@ -497,16 +496,11 @@ const rate = async (req, res) => {
     const avg = sum / count
     const updateRating = await Course.findOneAndUpdate({_id: courseId}, {rating: avg})
     const courses = await Course.find({userId: teacherId})
-    console.log(courses)
     const rates = courses.map(course=> course.rating)
-    console.log(rates)
     let rateSum = 0
     const rateCount = rates.length;
-    console.log(rateCount)
     rates.map(rate=> rateSum = rate+rateSum)
-    console.log(rateSum)
     const avgRate = rateSum / rateCount
-    console.log(avgRate)
     const teacherRating = await Teacher.findOneAndUpdate({userId: teacherId}, {$set: {rating: avgRate}})
     res.status(200).json(rating)
   }

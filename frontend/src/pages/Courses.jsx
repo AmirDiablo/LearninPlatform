@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom"
 import Filter from "../components/Filter"
 import Pagination from "../components/Pagination"
 import { FaStar } from "react-icons/fa";
+import Loader from "../components/Loader";
+import BookLoader from "../components/BookLoader";
 
 const Courses = () => {
     const [error, setError] = useState()
@@ -24,7 +26,6 @@ const Courses = () => {
             setError(null)
             setCourses(json.courses)
             setPageCount(json.pageCount)
-            console.log("ok")
         }
 
         if(!response.ok) {
@@ -78,6 +79,7 @@ const Courses = () => {
                 ))}
             </div>
             
+            {loading && <BookLoader />}
 
             {error && <div className="bg-red-500 text-white text-center p-2 mx-auto">{error}</div>}
 

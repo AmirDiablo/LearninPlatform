@@ -21,8 +21,6 @@ const CreateQuiz = () => {
     const {user} = useUser()
     const navigate = useNavigate()
 
-    console.log(questions)
-
     const teacherCourses = async ()=> {
         setLoading(true)
         setError(null)

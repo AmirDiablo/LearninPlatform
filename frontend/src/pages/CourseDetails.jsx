@@ -9,6 +9,8 @@ import VideoPlayer from "../components/VideoPlayer";
 import { FaPlay } from "react-icons/fa";
 import { CiStar } from "react-icons/ci";
 import {useUser} from "../context/userContext"
+import Loader from "../components/Loader";
+import BookLoader from "../components/BookLoader";
 import { format } from "date-fns";
 
 const CourseDetails = () => {
@@ -126,6 +128,8 @@ const CourseDetails = () => {
 
     const rate = async(e, teacherId)=> {
         e.preventDefault()
+        setLoading(true)
+        setError(null)
         const response = await fetch("http://localhost:3000/api/course/rating", {
             method: "PATCH",
             body: JSON.stringify({rate: rateValue, courseId: course[0]._id, comment: comment, teacherId}),
@@ -139,10 +143,13 @@ const CourseDetails = () => {
 
         if(response.ok) {
             setIsRating(false)
+            setLoading(false)
+            setError(null)
         }
 
         if(!response.ok) {
             setError(json.message)
+            setLoading(false)
         }
     }
 
@@ -242,6 +249,8 @@ const CourseDetails = () => {
 
             </div>
            ))}
+
+           {loading && <BookLoader />}
 
            {error && <div className="bg-red-500 mb-10 mx-auto w-max px-10 py-2 max-w-[70%] rounded-[10px] mt-10 text-white text-center">{error}</div>}
             

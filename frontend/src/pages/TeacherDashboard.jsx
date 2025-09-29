@@ -9,14 +9,17 @@ import { useState } from "react";
 import { useEffect } from "react";
 import Donut from "../components/Donut";
 import Progress from "../components/Progress";
+import BookLoader from "../components/BookLoader";
 
 const TeacherDashboard = () => {
     const {user} = useUser()
     const [error, setError] = useState()
-    const [loading, setLoading] = useState()
+    const [loading, setLoading] = useState(false)
     const [statics, setStatcis] = useState([])
 
     const teacherStatics = async ()=> {
+        setLoading(true)
+        setError(null)
         const response = await fetch("http://localhost:3000/api/user/teacherStatics", {
             method: "GET",
             headers: {
@@ -111,6 +114,8 @@ const TeacherDashboard = () => {
 
             </div>
             ))}
+
+            {loading && <div className="ml-[30%]"><BookLoader /></div>}
 
         </div>
      );
