@@ -1,8 +1,8 @@
 const BookLoader = () => {
     return ( 
-    <div className="absolute left-[50%] -translate-x-[50%] top-[50%] -translate-y-[50%]">
+    <div className="fixed left-[50%] -translate-x-[50%] top-[50%] -translate-y-[50%]">
 
-        <div class="loader h-3 relative w-24 left-[50%] -translate-x-[50%] overflow-visible mt-40">
+        <div className="loader h-3 relative w-24 overflow-visible">
             <div className="lefttSide w-13 h-[2px] absolute -left-5 rounded-2xl bg-orange-500"></div>
             <div className="leftPage w-11 h-[2px] absolute -top-1 -translate-x-[10px] rounded-2xl bg-orange-500"></div>
             <div className="movingleftPage w-11 h-[2px]  absolute -top-1 -translate-x-[10px] rounded-2xl bg-orange-500"></div>

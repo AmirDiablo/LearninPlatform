@@ -4,25 +4,37 @@ import { FaPlus } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
+import BookLoader from "../components/BookLoader";
+import Loader from "../components/Loader"
+import { useUser } from "../context/userContext";
 
 const TeacherCoursesPage = () => {
+    const {user} = useUser()
     const navigate = useNavigate()
-    const [laoding, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(null)
     const [courses, setCourses]  = useState([])
     const userId = JSON.parse(localStorage.getItem("user")).id
 
     const fetchCourses = async()=> {
         setLoading(true)
-        const response = await fetch("http://localhost:3000/api/course/teacherCourses?q="+userId)
+        setError(null)
+        const response = await fetch("http://localhost:3000/api/course/teacherCourses", {
+            method: "GET",
+            headers: {
+                "Authorization" : `Bearer ${user.token}`
+            }
+        })
         const json = await response.json()
 
         if(response.ok) {
             setLoading(false)
+            setError(null)
             setCourses(json)
         }
         if(!response.ok) {
             setLoading(false)
-            fetchCourses()
+            setError(json.message)
         }
     }
 
@@ -44,8 +56,10 @@ const TeacherCoursesPage = () => {
     }, [])
 
     useEffect(()=> {
-        fetchCourses()
-    }, [])
+        if(user?.token) {
+            fetchCourses()
+        }
+    }, [user])
 
     return ( 
         <div className="lg:absolute lg:right-0 lg:w-[70%]">
@@ -72,8 +86,10 @@ const TeacherCoursesPage = () => {
 
             </div>
 
-            <div className="bg-orange-500 p-5 rounded-full w-max text-white text-2xl shadow-[8px_8px_16px_#bebebe,_-8px_-8px_16px_#ffffff] fixed right-5 bottom-10" onClick={()=> navigate("createCourse")}><FaPlus /></div>
+            {!error && <div className="bg-orange-500 p-5 rounded-full w-max text-white text-2xl shadow-[8px_8px_16px_#bebebe,_-8px_-8px_16px_#ffffff] fixed right-5 bottom-10" onClick={()=> navigate("createCourse")}><FaPlus /></div> }
 
+                {error && <div className="bg-red-200 fixed left-[50%] -translate-x-[50%] top-[50%] -translate-y-[50%] text-center rounded-2xl py-2 w-max px-5 mx-auto">{error}</div>}
+                {loading && <BookLoader />}
         </div>
      );
 }

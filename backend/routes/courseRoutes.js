@@ -8,7 +8,7 @@ const router = express.Router();
 router.post("/", uploadThumbnail.single('thumbnail'), createCourse)
 router.post("/addLessons", uploadLessons.array("lesson"), addCurriculm)
 router.get("/categories", validCategories)
-router.get('/teacherCourses', teacherCourses)
+router.get('/teacherCourses', userAuth, teacherCourses)
 router.patch("/addLesson",  userAuth, uploadLessons.single("lessonFile"), addLesson)
 router.patch("/deleteLesson", userAuth, deleteLesson)
 router.patch("/editLesson", userAuth, editLesson)

@@ -191,10 +191,12 @@ const editProfile = async(req, res)=> {
 
      try {
         const id = req.user._id.toString()
-        const uploadedFile = req.files.profile[0].filename;
+        const uploadedFile = req?.files?.profile[0]?.filename;
         const { name, bio, instagram, linkedIn, youtube } = req.body;
         const newName = validator.escape(name)
         const newBio = validator.escape(bio)
+
+        console.log(id, name, bio, instagram, linkedIn, youtube, uploadedFile)
 
         const currentProfile = await Account.find({ _id: id }, { profile: 1, _id: 0 });
         

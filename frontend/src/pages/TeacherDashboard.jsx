@@ -115,6 +115,7 @@ const TeacherDashboard = () => {
             </div>
             ))}
 
+            {error && <div className="bg-red-200 fixed left-[50%] -translate-x-[50%] top-[50%] -translate-y-[50%] text-center rounded-2xl py-2 w-max px-5 mx-auto">{error}</div>}
             {loading && <div className="ml-[30%]"><BookLoader /></div>}
 
         </div>

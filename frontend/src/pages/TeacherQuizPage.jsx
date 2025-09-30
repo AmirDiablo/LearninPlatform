@@ -3,6 +3,7 @@ import TeachersDashTop from "../components/TeachersDashTop";
 import { FaPlus } from "react-icons/fa6";
 import { useState } from "react";
 import { useEffect } from "react";
+import BookLoader from "../components/BookLoader";
 
 const TeacherQuizPage = () => {
     const navigate = useNavigate()
@@ -78,9 +79,12 @@ const TeacherQuizPage = () => {
 
                 </div>
 
-                <div onClick={()=> navigate("createQuiz")} className="bg-orange-500 fixed bottom-10 right-10 text-2xl p-5 w-15 h-15 flex justify-center items-center rounded-full text-white text-center aspect-square"><FaPlus /></div>
+                {!error && <div onClick={()=> navigate("createQuiz")} className="bg-orange-500 fixed bottom-10 right-10 text-2xl p-5 w-15 h-15 flex justify-center items-center rounded-full text-white text-center aspect-square"><FaPlus /></div>}
 
             </div>
+
+            {error && <div className="bg-red-200 fixed left-[50%] -translate-x-[50%] top-[50%] -translate-y-[50%] text-center rounded-2xl py-2 w-max px-5 mx-auto">{error}</div>}
+            {loading && <BookLoader />}
         </div>
      );
 }

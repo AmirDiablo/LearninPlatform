@@ -196,12 +196,17 @@ const validCategories = async (req, res)=> {
 
 const teacherCourses = async(req, res) => {
     try{
-      const {q} = req.query
-      const courses = await Course.find({userId: q}).populate("userId")
+      const userId = req.user._id.toString()
+      console.log(userId)
+      const isTeacher = await Teacher.findOne({userId})
+      if(!isTeacher) {
+        throw new Error("Only teachers can access to this page")
+      }
+      const courses = await Course.find({userId: userId}).populate("userId")
       res.status(200).json(courses)
     }
     catch(error) {
-      res.status(500).json({message: error.message})
+      res.status(400).json({message: error.message})
     }
 }
 
