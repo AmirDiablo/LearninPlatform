@@ -5,6 +5,7 @@ import { FaFacebookF } from "react-icons/fa";
 import { FaLinkedinIn } from "react-icons/fa";
 import { useState } from "react";
 import { useUser } from "../context/userContext";
+import BookLoader from "../components/BookLoader";
 
 const TeacherLogin = () => {
     const {login} = useUser()
@@ -66,12 +67,11 @@ const TeacherLogin = () => {
                 
 
                 <div className="flex justify-between mt-5 items-center">
-                    <Link className="text-orange-500">don't Have an acccount?</Link>
-                    <button disabled={loading} onClick={handleLogin} className="bg-orange-500 text-white py-2 px-5 rounded-full ">Next</button>
+                    <Link to="/teacherSignup" className="text-orange-500">don't Have an acccount?</Link>
+                    <button disabled={loading} onClick={handleLogin} className="bg-orange-500 flex items-center text-white py-2 px-5 rounded-full">{loading && <div className="rounded-full animate-spin border-t-4 border-white w-5 aspect-square"></div>}Next</button>
                 </div>
 
                 {error && <div className="bg-red-500 text-white text-center p-2 mx-auto w-[70%] rounded-[10px] mt-10">{error}</div>}
-            
             </form>
 
             

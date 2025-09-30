@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import { useUser } from "../context/userContext";
+import BookLoader from "../components/BookLoader";
 
 const SignUp = () => {
     const [email, setEmail] = useState('')
@@ -219,7 +220,7 @@ const SignUp = () => {
                     <input onChange={(e)=> setUsername(e.target.value)} value={username} type="text" placeholder="First name" className="p-5 bg-white rounded-[7px] mt-5 w-[100%]" />                  
 
                     <div className="flex justify-end mt-5">
-                        <button onClick={createAccount} className="bg-orange-500 text-white py-2 px-5 rounded-full ">Sign up</button>
+                        <button onClick={createAccount} className="bg-orange-500 text-white py-2 px-5 rounded-full ">{loading && <div className="rounded-full animate-spin border-t-4 border-white w-5 aspect-square"></div>}Sign up</button>
                     </div>
 
                     {error && <div className="bg-red-500 text-white text-center p-2 mx-auto w-[70%] rounded-[10px] mt-10">{error}</div>}

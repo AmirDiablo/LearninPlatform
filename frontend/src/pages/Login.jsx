@@ -11,11 +11,14 @@ const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState(null)
+    const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
     const { login } = useUser()
 
     const loginToAccount = async(e)=> {
         e.preventDefault()
+        setLoading(true)
+        setError(null)
         const response = await fetch("http://localhost:3000/api/user/login", {
             method: "POST",
             body: JSON.stringify({email, password}),
@@ -28,12 +31,13 @@ const Login = () => {
 
         if(response.ok) {
             localStorage.setItem("user", JSON.stringify(json))
-            /* setIsLoading(false) */
+            setLoading(false)
             login(json._id)
             setError(null)
             navigate("/")
         }
         if(!response.ok) {
+            setLoading(false)
             setError(json.error)
         }
     }
@@ -63,14 +67,13 @@ const Login = () => {
 
                 <div className="flex items-center justify-between mt-5">
                     <p className="text-black/30">Forgot password?</p>
-                    <button onClick={loginToAccount} className="py-2 px-5 bg-orange-500 text-white rounded-full">Log in</button>
+                    <button disabled={loading} onClick={loginToAccount} className="py-2 px-5 flex items-center bg-orange-500 text-white rounded-full">{loading && <div className="rounded-full animate-spin border-t-4 border-white w-5 aspect-square"></div>}Log in</button>
                 </div>
 
                 <Link to="/signup" className="text-orange-500">don't Have an account?</Link>
 
                 {error && <div className="bg-red-500 text-white text-center p-2 mx-auto w-[70%] rounded-[10px] mt-10">{error}</div>}
             </form>
-            
         </div>
      );
 }

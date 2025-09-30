@@ -8,6 +8,7 @@ import { useUser } from "../context/userContext";
 import axios from "axios";
 import { CgProfile } from "react-icons/cg";
 import { GrCertificate } from "react-icons/gr";
+import BookLoader from "../components/BookLoader";
 
 const TeacherSignup = () => {
     const [email, setEmail] = useState('')
@@ -181,7 +182,7 @@ const TeacherSignup = () => {
                         <Link to="/teacherLogin" className="text-orange-500">Have an acccount?</Link>
                         <button onClick={handleEmailSubmit} className="bg-orange-500 text-white py-2 px-5 rounded-full ">Next</button>
                     </div>
-                
+                {error && <div className="bg-red-500 text-white p-2 w-[50%] mx-auto text-center rounded-[7px] mt-10">{error}</div>}
                 </form>
             }
 
@@ -208,7 +209,7 @@ const TeacherSignup = () => {
                         </button>
                         <button onClick={handleCodeSubmit} className="bg-orange-500 text-white py-2 px-5 rounded-full ">Next</button>
                     </div>
-                
+                {error && <div className="bg-red-500 text-white p-2 w-[50%] mx-auto text-center rounded-[7px] mt-10">{error}</div>}
                 </form>
             }
 
@@ -221,6 +222,7 @@ const TeacherSignup = () => {
                     <div className="relative text-white text-3xl aspect-square bg-orange-500 rounded-[7px] p-2" ><CgProfile className="mx-auto"/><input type="file" name="profile" onChange={(e)=> setProfile(e.target.files[0])} className="absolute top-0 left-0 w-[100%] h-[100%] rounded-[7px] opacity-0" /></div>
                     <button className="bg-orange-500 text-white py-2 px-5 rounded-full " onClick={handleRegister}>Register</button>
                   </div>
+                  {error && <div className="bg-red-500 text-white p-2 w-[50%] mx-auto text-center rounded-[7px] mt-10">{error}</div>}
                 </form>
               
             }
@@ -232,13 +234,12 @@ const TeacherSignup = () => {
                   <textarea placeholder="bio" onChange={(e)=> setBio(e.target.value)} value={bio} className="resize-none w-[100%] rounded-[7px] p-5 bg-white"/>
                   <div className="flex justify-between items-center">
                     <div className="relative w-15 flex justify-center items-center bg-orange-500 text-white text-3xl aspect-square rounded-[7px]"><GrCertificate className="mx-auto "/><input type="file" name="resume" onChange={(e)=> setResume(e.target.files[0])} className="w-[100%] h-[100%] absolute left-0 top-0 opacity-0" /></div>
-                    <button onClick={upload} className="text-white bg-orange-500 py-2 px-5 rounded-full">upload</button>
+                    <button onClick={upload} className="text-white flex items-center bg-orange-500 py-2 px-5 rounded-full">{loading && <div className="rounded-full animate-spin border-t-4 border-white w-5 aspect-square"></div>}upload</button>
                   </div>
+                  {error && <div className="bg-red-500 text-white p-2 w-[50%] mx-auto text-center rounded-[7px] mt-10">{error}</div>}
                 </form>
               
             }
-
-            {error && <div className="bg-red-500 text-white p-2 w-[50%] mx-auto text-center">{error}</div>}
 
         </div>
      );
