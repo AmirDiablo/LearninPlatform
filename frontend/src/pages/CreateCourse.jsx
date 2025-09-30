@@ -40,7 +40,7 @@ const CreateCourse = () => {
     }, [])
 
     const next = async(e)=> {
-        setLoading(false)
+        setLoading(true)
         setError(null)
         e.preventDefault()
         const formData = new FormData()
@@ -176,7 +176,7 @@ const CreateCourse = () => {
                     </select>
                     <div className="flex justify-between items-center">
                         <div className="bg-orange-500 px-5 py-2 text-white flex justify-center items-center rounded-[7px] w-max gap-2 relative">Thumbnail<AiOutlinePicture className="text-2xl"/> <input onChange={(e)=> setThumbnail(e.target.files[0])} type="file" name="thumbnail" className="w-[100%] absolute left-0 top-0 h-[100%] opacity-0" /></div>
-                        <button onClick={next} className="bg-orange-500 px-5 py-2 text-white flex justify-center items-center rounded-full w-max">Next</button>
+                        <button onClick={next} className="bg-orange-500 px-5 py-2 text-white flex justify-center items-center rounded-full w-max">{loading && <div className="rounded-full animate-spin border-t-4 border-white w-5 aspect-square"></div>}Next</button>
                     </div>
                 </form>
             }

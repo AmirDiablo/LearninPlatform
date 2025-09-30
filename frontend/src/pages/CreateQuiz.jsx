@@ -4,6 +4,7 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import {useUser} from "../context/userContext"
 import { useNavigate } from "react-router-dom";
 import quiz from "../assets/quiz.png"
+import BookLoader from "../components/BookLoader";
 
 const CreateQuiz = () => {
     const [time, setTime] = useState()
@@ -24,7 +25,12 @@ const CreateQuiz = () => {
     const teacherCourses = async ()=> {
         setLoading(true)
         setError(null)
-        const response = await fetch('http://localhost:3000/api/course/teacherCourses?q='+JSON.parse(localStorage.getItem("user")).id)
+        const response = await fetch('http://localhost:3000/api/course/teacherCourses', {
+            method: "GET",
+            headers: {
+                "Authorization" : `Bearer ${user.token}`
+            }
+        })
         const json = await response.json()
 
         if(!response.ok) {
@@ -40,8 +46,10 @@ const CreateQuiz = () => {
     }
 
     useEffect(()=> {
-        teacherCourses()
-    }, [])
+        if(user?.token) {
+            teacherCourses()
+        }
+    }, [user])
 
     const addQuestion = (e)=> {
         e.preventDefault()
@@ -87,6 +95,8 @@ const CreateQuiz = () => {
 
     const submitQiuz = async(e)=> {
         e.preventDefault()
+        setLoading(true)
+        setError(null)
 
         const response = await fetch("http://localhost:3000/api/quiz", {
             method: "POST",
@@ -105,7 +115,7 @@ const CreateQuiz = () => {
         }
 
         if(response.ok) {
-            navigate("/teacherQuizPage")
+            navigate("/teacherdashboard/teacherQuizPage")
         }
     }
 
@@ -175,6 +185,7 @@ const CreateQuiz = () => {
             </div>
 
 
+            {loading && <BookLoader />}
             {error && <div>{error}</div>}
 
         </div>

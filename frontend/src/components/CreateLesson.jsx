@@ -37,6 +37,8 @@ export default function CourseOutlineForm({courseId}) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true)
+    setError(null)
 
     const formData = new FormData();
 
@@ -71,8 +73,10 @@ export default function CourseOutlineForm({courseId}) {
 
       const data = await response.json();
       alert("اطلاعات با موفقیت ارسال شد");
-      console.log(data);
+      setLoading(false)
+      setError(null)
     } catch (error) {
+      setLoading(false)
       alert("ارسال اطلاعات با خطا مواجه شد: " + error.message);
     }
   };
@@ -143,7 +147,7 @@ export default function CourseOutlineForm({courseId}) {
         <button type="button" onClick={addChapter} className="bg-orange-500 text-white rounded-[7px] px-5 py-2 w-max hover:cursor-pointer">
           Add Curriculum
         </button>
-        <button type="submit" className="bg-orange-500 text-white rounded-[7px] px-5 py-2">Upload</button>
+        <button type="submit" className="bg-orange-500 text-white rounded-[7px] px-5 py-2 flex items-center">{loading && <div className="rounded-full animate-spin border-t-4 border-white w-5 aspect-square"></div>}Upload</button>
       </div>
 
       <br />
