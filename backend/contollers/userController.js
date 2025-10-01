@@ -324,8 +324,6 @@ const Studentinfos = async (req, res)=> {
     const uniqueCategories = [...new Set(allCategories)];
     
     const Recommended = await Course.find({category: {$in: uniqueCategories}, _id: {$nin: coursesIds}})
-
-    console.log(Recommended)
     
     const response = {
         _id: account._id,

@@ -6,7 +6,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { LuAlarmClockCheck } from "react-icons/lu";
-import check from "../assets/check.jfif"
+import check from "../assets/check2.png"
 
 const QuizPage = () => {
     const quizId = useLocation().search.split("=")[1]

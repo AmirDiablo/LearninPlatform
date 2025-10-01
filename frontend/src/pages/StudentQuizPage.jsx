@@ -59,6 +59,7 @@ const StudentQuizPage = () => {
                     {!loading && 
                     <div className="space-y-2 md:space-x-5">
                         
+                        {notSubmittedQuizes.length != 0 && 
                         <div>
 
                             <p className="mb-2 font-[600]">Quizes</p>
@@ -80,10 +81,12 @@ const StudentQuizPage = () => {
                                 </div>}
 
                         </div>
+                        }
 
                         
 
-                        <div>
+                        {SubmittedQuizes.length != 0 && 
+                        <div className="space-y-2">
                             <p className="mb-2 font-[600] mt-20">Submitted Quizes</p>
                             {SubmittedQuizes?.map(quiz=> (
                                 <div className="flex gap-2 bg-white border-[2px] border-black/10 p-2 rounded-2xl md:w-[40%]" onClick={()=> navigate("studentQuizResult?q="+quiz?._id)}>
@@ -96,12 +99,12 @@ const StudentQuizPage = () => {
                                 </div>
                             )   )}
                         </div>
+                        }
                     
                     
                     </div>}
 
                     {loading && <BookLoader />}
-                    {error && <div className="bg-red-200 fixed left-[50%] -translate-x-[50%] top-[50%] -translate-y-[50%] text-center rounded-2xl py-2 w-max px-5 mx-auto">{error}</div>}
 
                 </div>
 

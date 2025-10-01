@@ -69,7 +69,7 @@ const Courses = () => {
                                         <img src={"http://localhost:3000/uploads/profiles/"+course.userId.profile} className="w-10 rounded-full object-cover"/>
                                         <p className="text-[15px]">{course.userId.username}</p>
                                     </div>
-                                    <p className="bg-orange-300 text-orange-600 p-2 rounded-[7px]">{course.level}</p>
+                                    <p className="bg-orange-200 text-orange-600 p-2 rounded-[7px]">{course.level}</p>
                                 </div>
                             </div>
                             <strong>{course.title}</strong>

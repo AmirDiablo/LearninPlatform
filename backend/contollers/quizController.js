@@ -18,7 +18,7 @@ const createQuiz = async(req, res) => {
         throw new Error("Questions, course and time are required!")
     }
 
-    const secFromat = 30 * 60
+    const secFromat = time * 60
 
     const createQuiz = await Quiz.create({courseId, time: secFromat, questions})
 

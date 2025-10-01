@@ -40,7 +40,7 @@ const StudentQuizResult = () => {
     }, [user])
 
     return ( 
-        <div>
+        <div className="mb-10">
             
 
             <div className="flex items-center gap-2 mx-5">
