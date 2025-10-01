@@ -187,59 +187,56 @@ const liveSearch = async(req, res)=> {
     }
 }
 
-const editProfile = async(req, res)=> {
-
-     try {
-        const id = req.user._id.toString()
-        const uploadedFile = req?.files?.profile[0]?.filename;
+const editProfile = async (req, res) => {
+    try {
+        const id = req.user._id.toString();
+        const uploadedFile = req?.files?.profile?.[0]?.filename;
         const { name, bio, instagram, linkedIn, youtube } = req.body;
-        const newName = validator.escape(name)
-        const newBio = validator.escape(bio)
 
-        console.log(id, name, bio, instagram, linkedIn, youtube, uploadedFile)
+        const newName = validator.escape(name || "");
+        const newBio = validator.escape(bio || "");
 
-        const currentProfile = await Account.find({ _id: id }, { profile: 1, _id: 0 });
-        
-        if(uploadedFile) {
-            // ابتدا آپدیت را انجام دهید
-            const profilePhoto = await Account.findOneAndUpdate(
-                { _id: id },
-                { $set: { profile: uploadedFile, username: newName } },
-                { new: true } // این گزینه باعث می‌شود سند آپدیت شده برگردانده شود
-            );
+        // آماده‌سازی فیلدهای قابل آپدیت
+        const updateFields = { username: newName };
 
-            // سپس فایل قدیمی را حذف کنید
-            if(currentProfile[0].profile) {
-                const oldProfilePath = path.join(__dirname, "..", "uploads", "profiles", currentProfile[0].profile);
-                console.log("Old profile path:", oldProfilePath);
+        if (uploadedFile) {
+            updateFields.profile = uploadedFile;
 
+            // حذف عکس قبلی
+            const currentProfile = await Account.findById(id).select("profile");
+            if (currentProfile?.profile) {
+                const oldProfilePath = path.join(__dirname, "..", "uploads", "profiles", currentProfile.profile);
                 if (fs.existsSync(oldProfilePath)) {
                     fs.unlink(oldProfilePath, (err) => {
                         if (err) console.log("Error deleting old profile:", err);
                         else console.log("Old profile deleted successfully");
                     });
                 }
-            }else{
-                console.log("not exists")
             }
-
-        }else{
-            const profilePhoto = await Account.findOneAndUpdate(
-                { _id: id },
-                { $set: { username: newName } },
-                { new: true } // این گزینه باعث می‌شود سند آپدیت شده برگردانده شود
-            );
         }
-        
-        const updateTeacher = await Teacher.findOneAndUpdate({userId: id}, {bio: newBio, instagram, linkedin: linkedIn, youtube: youtube})
 
-        res.json("submited");
+        // آپدیت اطلاعات حساب کاربری
+        await Account.findByIdAndUpdate(id, { $set: updateFields }, { new: true });
+
+        // آپدیت اطلاعات معلم
+        await Teacher.findOneAndUpdate(
+            { userId: id },
+            {
+                bio: newBio,
+                instagram,
+                linkedin: linkedIn,
+                youtube
+            },
+            { new: true }
+        );
+
+        res.status(200).json({ message: "Profile updated successfully" });
     } catch (err) {
-        console.log(err);
+        console.error("Edit profile error:", err);
         res.status(500).json({ error: err.message });
     }
-    
-}
+};
+
 
 const continueWithGoogle = async(req, res)=> {
     const {googleId, username, email} = req.body
@@ -342,35 +339,41 @@ const Studentinfos = async (req, res)=> {
     
 }
 
-const studentEditProfile = async(req, res) => {
-    const userId = req.user._id.toString()
-    const {name} = req.body
-    const profile = req.file.filename
+const studentEditProfile = async (req, res) => {
+    const userId = req.user._id.toString();
+    const { name } = req.body;
 
-    const currentProfile = await Account.find({ _id: userId }, { profile: 1, _id: 0 });
+    try {
+        let updatedFields = { username: name };
 
-    const profilePhoto = await Account.findOneAndUpdate(
-        { _id: userId },
-        { $set: { profile: profile, username: name } },
-        { new: true } // این گزینه باعث می‌شود سند آپدیت شده برگردانده شود
-    );
+        // اگر فایل جدید آپلود شده باشه، عکس جدید رو اضافه کن
+        if (req.file) {
+            updatedFields.profile = req.file.filename;
 
-    // سپس فایل قدیمی را حذف کنید
-    if(currentProfile[0].profile) {
-        const oldProfilePath = path.join(__dirname, "..", "uploads", "profiles", currentProfile[0].profile);
-        console.log("Old profile path:", oldProfilePath);
-
-        if (fs.existsSync(oldProfilePath)) {
-            fs.unlink(oldProfilePath, (err) => {
-                if (err) console.log("Error deleting old profile:", err);
-                else console.log("Old profile deleted successfully");
-            });
+            // عکس قبلی رو حذف کن
+            const currentProfile = await Account.findById(userId).select("profile");
+            if (currentProfile?.profile) {
+                const oldProfilePath = path.join(__dirname, "..", "uploads", "profiles", currentProfile.profile);
+                if (fs.existsSync(oldProfilePath)) {
+                    fs.unlink(oldProfilePath, (err) => {
+                        if (err) console.log("Error deleting old profile:", err);
+                        else console.log("Old profile deleted successfully");
+                    });
+                }
+            }
         }
-    }else{
-        console.log("not exists")
-    }
 
-    res.status(200).json(profilePhoto)
-}
+        const profilePhoto = await Account.findByIdAndUpdate(
+            userId,
+            { $set: updatedFields },
+            { new: true }
+        );
+
+        res.status(200).json(profilePhoto);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 
 module.exports = { signup, userInfo, liveSearch, userLogin, editProfile, continueWithGoogle, changePass, setPass, completeTeachersSignup, teacherInfo, Studentinfos, studentEditProfile, teacherStatics }

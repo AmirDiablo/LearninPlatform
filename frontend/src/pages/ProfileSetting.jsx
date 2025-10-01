@@ -93,7 +93,12 @@ const ProfileSetting = () => {
             formData.append("instagram", instagram)
             formData.append("linkedIn", LinkedIn)
             formData.append("youtube", youtube)
-            formData.append("profile", file)
+
+            // فقط اگر فایل جدید انتخاب شده باشه، اضافه کن
+            if (file instanceof File) {
+                formData.append("profile", file);
+            }
+            
             const response = await fetch("http://localhost:3000/api/user/editProfile", {
                 method: "PATCH",
                 body: formData,
@@ -131,7 +136,7 @@ const ProfileSetting = () => {
                     </div>
 
                     <div className="relative mt-10">
-                        {preview ? <img src={preview} alt="cover" className="w-[50%] object-cover rounded-full aspect-square mx-auto" /> : <img src={"http://localhost:3000/uploads/profiles/"+file} alt="cover" className="w-45 object-cover aspect-square mx-auto rounded-full" />}
+                        {preview ? <img src={preview} alt="cover" className="w-45 object-cover rounded-full aspect-square mx-auto" /> : <img src={"http://localhost:3000/uploads/profiles/"+file} alt="cover" className="w-45 object-cover aspect-square mx-auto rounded-full" />}
                         <input onChange={chnagePreview} type="file" name="profile" id="profile" className="opacity-0 absolute top-0 left-[50%] -translate-x-[50%] w-45 aspect-square rounded-full" />
                     </div>
                     <div className="flex flex-col w-[90%] mx-auto mt-10">

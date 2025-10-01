@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useUser } from "../context/userContext";
 import { RxCross2 } from "react-icons/rx";
 import { TfiWrite } from "react-icons/tfi";
+import BookLoader from "../components/BookLoader";
 
 const StudentQuizPage = () => {
     const {user} = useUser()
@@ -47,8 +48,6 @@ const StudentQuizPage = () => {
         }
     }, [user])
 
-    console.log(SubmittedQuizes, notSubmittedQuizes)
-
     return ( 
         <div>
             <TeachersDashTop  active={'teacherQuizPage'} />
@@ -57,6 +56,7 @@ const StudentQuizPage = () => {
 
                 <div className="mx-5 mt-10">
 
+                    {!loading && 
                     <div className="space-y-2 md:space-x-5">
                         
                         <div>
@@ -98,7 +98,10 @@ const StudentQuizPage = () => {
                         </div>
                     
                     
-                    </div>
+                    </div>}
+
+                    {loading && <BookLoader />}
+                    {error && <div className="bg-red-200 fixed left-[50%] -translate-x-[50%] top-[50%] -translate-y-[50%] text-center rounded-2xl py-2 w-max px-5 mx-auto">{error}</div>}
 
                 </div>
 

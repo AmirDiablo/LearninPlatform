@@ -4,12 +4,14 @@ import { FaPlus } from "react-icons/fa6";
 import { useState } from "react";
 import { useEffect } from "react";
 import BookLoader from "../components/BookLoader";
+import { useUser } from "../context/userContext";
 
 const TeacherQuizPage = () => {
     const navigate = useNavigate()
     const [error, setError] = useState()
     const [loading, setLoading] = useState(false)
     const [quizes, setQuizes] = useState([])
+    const {user} = useUser()
 
     const fetchQuizes = async()=> {
         setLoading(true)
@@ -17,7 +19,7 @@ const TeacherQuizPage = () => {
         const response = await fetch("http://localhost:3000/api/quiz/teacherQuizes", {
             method: "GET",
             headers: {
-                "Authorization" : `Bearer ${JSON.parse(localStorage.getItem("user")).token}`
+                "Authorization" : `Bearer ${user.token}`
             }
         })
         const json = await response.json()
@@ -52,8 +54,10 @@ const TeacherQuizPage = () => {
     }, [])
 
     useEffect(()=> {
-        fetchQuizes()
-    }, [])
+        if(user?.token) {
+            fetchQuizes()
+        }
+    }, [user])
 
     return ( 
         <div>
